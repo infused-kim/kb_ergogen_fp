@@ -11,6 +11,12 @@
 //      if true, will add choc sized keycap box around the footprint
 //
 // note: hotswap and reverse can be used simultaneously
+//
+// Changes compared to original ergogen footprint:
+//  - Added hotswap socket outlines to silk screen
+//  - Moved switch corner marks from user layer to silk screen
+//  - Added option to show 1.5u keycap outline
+//  - Changed keycap outline to show the exact choc keycap dimensions instead of padded dimensions (17.5mm length vs 18mm)
 
 module.exports = {
     params: {
@@ -61,17 +67,17 @@ module.exports = {
         `
       const keycap = `
         ${'' /* keycap marks - 1u */}
-        (fp_line (start -9 -8.5) (end 9 -8.5) (layer Dwgs.User) (width 0.15))
-        (fp_line (start 9 -8.5) (end 9 8.5) (layer Dwgs.User) (width 0.15))
-        (fp_line (start 9 8.5) (end -9 8.5) (layer Dwgs.User) (width 0.15))
-        (fp_line (start -9 8.5) (end -9 -8.5) (layer Dwgs.User) (width 0.15))
+        (fp_line (start -8.75 -8.25) (end 8.75 -8.25) (layer Dwgs.User) (width 0.15))
+        (fp_line (start 8.75 -8.25) (end 8.75 8.25) (layer Dwgs.User) (width 0.15))
+        (fp_line (start 8.75 8.25) (end -8.75 8.25) (layer Dwgs.User) (width 0.15))
+        (fp_line (start -8.75 8.25) (end -8.75 -8.25) (layer Dwgs.User) (width 0.15))
         `
       const keycap_1_5u = `
         ${'' /* keycap marks - 1.5u */}
-        (fp_line (start -13.5 -8.5) (end 13.5 -8.5) (layer Dwgs.User) (width 0.15))
-        (fp_line (start 13.5 -8.5) (end 13.5 8.5) (layer Dwgs.User) (width 0.15))
-        (fp_line (start 13.5 8.5) (end -13.5 8.5) (layer Dwgs.User) (width 0.15))
-        (fp_line (start -13.5 8.5) (end -13.5 -8.5) (layer Dwgs.User) (width 0.15))
+        (fp_line (start -13.25 -8.25) (end 13.25 -8.25) (layer Dwgs.User) (width 0.15))
+        (fp_line (start 13.25 -8.25) (end 13.25 8.25) (layer Dwgs.User) (width 0.15))
+        (fp_line (start 13.25 8.25) (end -13.25 8.25) (layer Dwgs.User) (width 0.15))
+        (fp_line (start -13.25 8.25) (end -13.25 -8.25) (layer Dwgs.User) (width 0.15))
         `
       function pins(def_neg, def_pos, def_side) {
         if(p.hotswap) {
