@@ -8,8 +8,10 @@ module.exports = {
         VCC: {type: 'net', value: 'VCC'},
         GND: {type: 'net', value: 'GND'},
         CS: {type: 'net', value: 'CS'},
+        show_labels: {type: 'boolean', value: true},
     },
-    body: p => `
+    body: p => {
+      const standard = `
       (module nice!view (layer F.Cu) (tedit 644356EB)
         ${p.at /* parametric position */}
 
@@ -70,36 +72,6 @@ module.exports = {
         )
         (fp_text user %R (at 0 4.35 ${p.rot}) (layer B.Fab)
           (effects (font (size 1 1) (thickness 0.15)))
-        )
-        (fp_text user DA (at -5.23 -3.65 ${p.rot}) (layer F.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)))
-        )
-        (fp_text user CL (at -2.63 -3.65 ${p.rot}) (layer F.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)))
-        )
-        (fp_text user VCC (at 0 -0.65 ${p.rot}) (layer F.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)))
-        )
-        (fp_text user GND (at 2.47 -3.65 ${p.rot}) (layer F.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)))
-        )
-        (fp_text user CS (at -5.13 -3.95 ${p.rot}) (layer B.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
-        )
-        (fp_text user DA (at 5.07 -3.95 ${p.rot}) (layer B.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
-        )
-        (fp_text user CL (at 2.57 -3.95 ${p.rot}) (layer B.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
-        )
-        (fp_text user VCC (at 0 -0.65 ${p.rot}) (layer B.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
-        )
-        (fp_text user GND (at -2.53 -3.95 ${p.rot}) (layer B.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
-        )
-        (fp_text user CS (at 4.97 -3.65 ${p.rot}) (layer F.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)))
         )
         (pad 16 smd custom (at 2.51 -2.505 ${90 + p.rot}) (size 0.3 0.3) (layers F.Cu F.Mask)
           ${p.GND.str}
@@ -250,6 +222,44 @@ module.exports = {
               (xy -0.5 -0.75) (xy 0.5 -0.75) (xy 1 0) (xy 0.5 0.75) (xy -0.5 0.75)
       ) (width 0))
           ))
+      `
+    const labels = `
+      ${'' /* Add the optional parts here */}
+      (fp_text user DA (at -5.23 -3.65 ${p.rot}) (layer F.SilkS)
+      (effects (font (size 1 0.7) (thickness 0.1)))
       )
-        `
+      (fp_text user CL (at -2.63 -3.65 ${p.rot}) (layer F.SilkS)
+        (effects (font (size 1 0.7) (thickness 0.1)))
+      )
+      (fp_text user VCC (at 0 -0.65 ${p.rot}) (layer F.SilkS)
+        (effects (font (size 1 0.7) (thickness 0.1)))
+      )
+      (fp_text user GND (at 2.47 -3.65 ${p.rot}) (layer F.SilkS)
+        (effects (font (size 1 0.7) (thickness 0.1)))
+      )
+      (fp_text user CS (at -5.13 -3.95 ${p.rot}) (layer B.SilkS)
+        (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
+      )
+      (fp_text user DA (at 5.07 -3.95 ${p.rot}) (layer B.SilkS)
+        (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
+      )
+      (fp_text user CL (at 2.57 -3.95 ${p.rot}) (layer B.SilkS)
+        (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
+      )
+      (fp_text user VCC (at 0 -0.65 ${p.rot}) (layer B.SilkS)
+        (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
+      )
+      (fp_text user GND (at -2.53 -3.95 ${p.rot}) (layer B.SilkS)
+        (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
+      )
+      (fp_text user CS (at 4.97 -3.65 ${p.rot}) (layer F.SilkS)
+        (effects (font (size 1 0.7) (thickness 0.1)))
+      )
+      `
+    return `
+      ${standard}
+      ${p.show_labels ? labels : ''}
+      )
+    `
+  }
 }
