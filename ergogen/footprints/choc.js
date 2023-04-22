@@ -18,6 +18,7 @@ module.exports = {
       hotswap: false,
       reverse: false,
       keycaps: false,
+      show_1_5u_outline: false,
       from: undefined,
       to: undefined
     },
@@ -59,11 +60,18 @@ module.exports = {
         (pad "" np_thru_hole circle (at -5.5 0) (size 1.7018 1.7018) (drill 1.7018) (layers *.Cu *.Mask))
         `
       const keycap = `
-        ${'' /* keycap marks */}
+        ${'' /* keycap marks - 1u */}
         (fp_line (start -9 -8.5) (end 9 -8.5) (layer Dwgs.User) (width 0.15))
         (fp_line (start 9 -8.5) (end 9 8.5) (layer Dwgs.User) (width 0.15))
         (fp_line (start 9 8.5) (end -9 8.5) (layer Dwgs.User) (width 0.15))
         (fp_line (start -9 8.5) (end -9 -8.5) (layer Dwgs.User) (width 0.15))
+        `
+      const keycap_1_5u = `
+        ${'' /* keycap marks - 1.5u */}
+        (fp_line (start -13.5 -8.5) (end 13.5 -8.5) (layer Dwgs.User) (width 0.15))
+        (fp_line (start 13.5 -8.5) (end 13.5 8.5) (layer Dwgs.User) (width 0.15))
+        (fp_line (start 13.5 8.5) (end -13.5 8.5) (layer Dwgs.User) (width 0.15))
+        (fp_line (start -13.5 8.5) (end -13.5 -8.5) (layer Dwgs.User) (width 0.15))
         `
       function pins(def_neg, def_pos, def_side) {
         if(p.hotswap) {
@@ -117,14 +125,22 @@ module.exports = {
       if(p.reverse) {
         return `
           ${standard}
-          ${p.keycaps ? keycap : ''}
+          ${
+            !p.keycaps ? '' : (
+                p.show_1_5u_outline ? keycap_1_5u : keycap
+            )
+          }
           ${pins('-', '', 'B')}
           ${pins('', '-', 'F')})
           `
       } else {
         return `
           ${standard}
-          ${p.keycaps ? keycap : ''}
+          ${
+            !p.keycaps ? '' : (
+                p.show_1_5u_outline ? keycap_1_5u : keycap
+            )
+          }
           ${pins('-', '', 'B')})
           `
       }
