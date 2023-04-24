@@ -7,8 +7,8 @@ module.exports = {
     params: {
       designator: 'SW',
       side: 'F',
-      from: {type: 'net', value: 'RAW'},
-      to: {type: 'net', value: 'GND'},
+      from: {type: 'net', value: 'BAT_P'},
+      to: {type: 'net', value: 'RAW'},
       reverse: false,
     },
     body: p => {
