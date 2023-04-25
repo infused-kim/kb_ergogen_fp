@@ -37,170 +37,195 @@ module.exports = {
 
       show_labels: false,
       label_layer: 'Fab',
-      P21_label: 'P21',
-      P20_label: 'P20',
-      P19_label: 'P19',
-      P18_label: 'P18',
-      P15_label: 'P15',
-      P14_label: 'P14',
-      P16_label: 'P16',
-      P10_label: 'P10',
-      P1_label: 'P1',
-      P0_label: 'P0',
-      P2_label: 'P2',
-      P3_label: 'P3',
-      P4_label: 'P4',
-      P5_label: 'P5',
-      P6_label: 'P6',
-      P7_label: 'P7',
-      P8_label: 'P8',
-      P9_label: 'P9',
+      RAW_label: '',
+      GND_label: '',
+      RST_label: '',
+      VCC_label: '',
+      P21_label: '',
+      P20_label: '',
+      P19_label: '',
+      P18_label: '',
+      P15_label: '',
+      P14_label: '',
+      P16_label: '',
+      P10_label: '',
+      P1_label: '',
+      P0_label: '',
+      P2_label: '',
+      P3_label: '',
+      P4_label: '',
+      P5_label: '',
+      P6_label: '',
+      P7_label: '',
+      P8_label: '',
+      P9_label: '',
     },
     body: p => {
+      const get_pin_net_name = (p, pin_name) => {
+        return p[pin_name].name;
+      };
+
+      const get_pin_label_override = (p, pin_name) => {
+        prop_name = `${pin_name}_label`;
+        return p[prop_name];
+      };
+
+      const get_pin_label = (p, pin_name) => {
+        label = get_pin_label_override(p, pin_name);
+        if(label == '') {
+          label = get_pin_net_name(p, pin_name);
+        }
+
+        if(label === undefined) {
+          label = '""';
+        }
+
+        return label;
+      };
 
       const pin_labels = `
-        (fp_text user ${p.P21_label} (at -3.81 -2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P21') } (at -3.81 -2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P2_label} (at -3.81 2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P2') } (at -3.81 2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P2_label} (at -3.81 2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P2') } (at -3.81 2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P21_label} (at -3.81 -2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P21') } (at -3.81 -2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user VCC (at -6.35 -2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'VCC') } (at -6.35 -2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user GND (at -6.35 2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'GND') } (at -6.35 2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user GND (at -6.35 2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'GND') } (at -6.35 2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user VCC (at -6.35 -2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'VCC') } (at -6.35 -2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user RST (at -8.89 -2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'RST') } (at -8.89 -2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user GND (at -8.89 2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'GND') } (at -8.89 2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user GND (at -8.89 2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'GND') } (at -8.89 2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user RST (at -8.89 -2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'RST') } (at -8.89 -2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user GND (at -11.43 -2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'GND') } (at -11.43 -2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P0_label} (at -11.43 2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P0') } (at -11.43 2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P0_label} (at -11.43 2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P0') } (at -11.43 2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user GND (at -11.43 -2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'GND') } (at -11.43 -2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user RAW (at -13.97 -2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'RAW') } (at -13.97 -2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P1_label} (at -13.97 2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P1') } (at -13.97 2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P1_label} (at -13.97 2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P1') } (at -13.97 2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user RAW (at -13.97 -2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'RAW') } (at -13.97 -2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P20_label} (at -1.27 -2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P20') } (at -1.27 -2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P3_label} (at -1.27 2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P3') } (at -1.27 2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P3_label} (at -1.27 2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P3') } (at -1.27 2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P20_label} (at -1.27 -2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P20') } (at -1.27 -2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P19_label} (at 1.27 -2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P19') } (at 1.27 -2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P4_label} (at 1.27 2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P4') } (at 1.27 2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P4_label} (at 1.27 2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P4') } (at 1.27 2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P19_label} (at 1.27 -2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P19') } (at 1.27 -2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P18_label} (at 3.81 -2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P18') } (at 3.81 -2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P5_label} (at 3.81 2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P5') } (at 3.81 2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P5_label} (at 3.81 2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P5') } (at 3.81 2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P18_label} (at 3.81 -2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P18') } (at 3.81 -2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P15_label} (at 6.35 -2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P15') } (at 6.35 -2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P6_label} (at 6.35 2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P6') } (at 6.35 2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P6_label} (at 6.35 2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P6') } (at 6.35 2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P15_label} (at 6.35 -2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P15') } (at 6.35 -2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P14_label} (at 8.89 -2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P14') } (at 8.89 -2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P7_label} (at 8.89 2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P7') } (at 8.89 2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P7_label} (at 8.89 2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P7') } (at 8.89 2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P14_label} (at 8.89 -2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P14') } (at 8.89 -2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P16_label} (at 11.43 -2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P16') } (at 11.43 -2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P8_label} (at 11.43 2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P8') } (at 11.43 2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P8_label} (at 11.43 2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P8') } (at 11.43 2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P16_label} (at 11.43 -2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P16') } (at 11.43 -2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P10_label} (at 13.97 -2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P10') } (at 13.97 -2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P9_label} (at 13.97 2.75) (layer F.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P9') } (at 13.97 2.75) (layer F.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)))
         )
-        (fp_text user ${p.P9_label} (at 13.97 2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P9') } (at 13.97 2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
-        (fp_text user ${p.P10_label} (at 13.97 -2.75) (layer B.${p.label_layer})
+        (fp_text user ${ get_pin_label(p, 'P10') } (at 13.97 -2.75) (layer B.${p.label_layer})
           (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
         )
       `
