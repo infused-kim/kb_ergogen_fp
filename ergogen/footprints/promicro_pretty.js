@@ -33,9 +33,178 @@ module.exports = {
       P6: {type: 'net', value: 'P6'},
       P7: {type: 'net', value: 'P7'},
       P8: {type: 'net', value: 'P8'},
-      P9: {type: 'net', value: 'P9'}
+      P9: {type: 'net', value: 'P9'},
+
+      show_labels: false,
+      label_layer: 'Fab',
+      P21_label: 'P21',
+      P20_label: 'P20',
+      P19_label: 'P19',
+      P18_label: 'P18',
+      P15_label: 'P15',
+      P14_label: 'P14',
+      P16_label: 'P16',
+      P10_label: 'P10',
+      P1_label: 'P1',
+      P0_label: 'P0',
+      P2_label: 'P2',
+      P3_label: 'P3',
+      P4_label: 'P4',
+      P5_label: 'P5',
+      P6_label: 'P6',
+      P7_label: 'P7',
+      P8_label: 'P8',
+      P9_label: 'P9',
     },
     body: p => {
+
+      const pin_labels = `
+        (fp_text user ${p.P21_label} (at -3.81 -2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P2_label} (at -3.81 2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P2_label} (at -3.81 2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P21_label} (at -3.81 -2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user VCC (at -6.35 -2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user GND (at -6.35 2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user GND (at -6.35 2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user VCC (at -6.35 -2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user RST (at -8.89 -2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user GND (at -8.89 2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user GND (at -8.89 2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user RST (at -8.89 -2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user GND (at -11.43 -2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P0_label} (at -11.43 2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P0_label} (at -11.43 2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user GND (at -11.43 -2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user RAW (at -13.97 -2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P1_label} (at -13.97 2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P1_label} (at -13.97 2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user RAW (at -13.97 -2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P20_label} (at -1.27 -2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P3_label} (at -1.27 2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P3_label} (at -1.27 2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P20_label} (at -1.27 -2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P19_label} (at 1.27 -2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P4_label} (at 1.27 2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P4_label} (at 1.27 2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P19_label} (at 1.27 -2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P18_label} (at 3.81 -2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P5_label} (at 3.81 2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P5_label} (at 3.81 2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P18_label} (at 3.81 -2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P15_label} (at 6.35 -2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P6_label} (at 6.35 2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P6_label} (at 6.35 2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P15_label} (at 6.35 -2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P14_label} (at 8.89 -2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P7_label} (at 8.89 2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P7_label} (at 8.89 2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P14_label} (at 8.89 -2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P16_label} (at 11.43 -2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P8_label} (at 11.43 2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P8_label} (at 11.43 2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P16_label} (at 11.43 -2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P10_label} (at 13.97 -2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P9_label} (at 13.97 2.75) (layer F.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)))
+        )
+        (fp_text user ${p.P9_label} (at 13.97 2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+        (fp_text user ${p.P10_label} (at 13.97 -2.75) (layer B.${p.label_layer})
+          (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+        )
+      `
+
       return `
       (module ProMicro (layer F.Cu) (tedit 6135B927)
         ${p.at /* parametric position */}
@@ -1604,6 +1773,9 @@ module.exports = {
           (gr_line (start 0.762 -0.762) (end 0.762 -3.302) (width 0.25))
           (gr_line (start 0.762 -3.302) (end 0 -4.064) (width 0.25))
         ))
+
+      ${''/* Labels for pins */}
+      ${ p.show_labels ? pin_labels : ''}
     )
     `
     }
