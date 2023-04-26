@@ -251,12 +251,6 @@ module.exports = {
       (fp_line (start -12.7 -6.35) (end -12.7 -8.89) (layer B.SilkS) (width 0.15))
       (fp_line (start -12.7 -8.89) (end -15.24 -8.89) (layer B.SilkS) (width 0.15))
 
-      ${''/* illustration of the (possible) USB port overhang */}
-      (fp_line (start -19.304 -3.81) (end -14.224 -3.81) (layer Dwgs.User) (width 0.15))
-      (fp_line (start -19.304 3.81) (end -19.304 -3.81) (layer Dwgs.User) (width 0.15))
-      (fp_line (start -14.224 3.81) (end -19.304 3.81) (layer Dwgs.User) (width 0.15))
-      (fp_line (start -14.224 -3.81) (end -14.224 3.81) (layer Dwgs.User) (width 0.15))
-
       (fp_circle (center 13.97 0.762) (end 14.095 0.762) (layer B.Mask) (width 0.25))
       (fp_circle (center 13.97 0.762) (end 14.095 0.762) (layer F.Mask) (width 0.25))
       (fp_circle (center 13.97 -0.762) (end 14.095 -0.762) (layer B.Mask) (width 0.25))
@@ -1798,6 +1792,18 @@ module.exports = {
           (gr_line (start 0.762 -0.762) (end 0.762 -3.302) (width 0.25))
           (gr_line (start 0.762 -3.302) (end 0 -4.064) (width 0.25))
         ))
+
+        ${''/* Outline of nice!nano */}
+        (fp_line (start 15.24 8.89) (end 15.24 -8.89) (layer F.Fab) (width 0.15))
+        (fp_line (start -15.24 8.89) (end 15.24 8.89) (layer F.Fab) (width 0.15))
+        (fp_line (start -19.304 -3.556) (end -14.224 -3.556) (layer Dwgs.User) (width 0.15))
+        (fp_line (start -17.78 -8.89) (end -17.78 8.89) (layer F.Fab) (width 0.15))
+        (fp_line (start -14.224 3.81) (end -19.304 3.81) (layer Dwgs.User) (width 0.15))
+        (fp_line (start -19.304 3.81) (end -19.304 -3.556) (layer Dwgs.User) (width 0.15))
+        (fp_line (start -17.78 8.89) (end -15.24 8.89) (layer F.Fab) (width 0.15))
+        (fp_line (start -15.24 -8.89) (end -17.78 -8.89) (layer F.Fab) (width 0.15))
+        (fp_line (start -14.224 -3.556) (end -14.224 3.81) (layer Dwgs.User) (width 0.15))
+        (fp_line (start 15.24 -8.89) (end -15.24 -8.89) (layer F.Fab) (width 0.15))
 
       ${''/* Labels for pins */}
       ${ p.show_labels ? pin_labels : ''}
