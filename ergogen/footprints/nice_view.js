@@ -75,22 +75,6 @@ module.exports = {
         (fp_line (start 5.93 14.9) (end 4.23 14.9) (layer F.Fab) (width 0.15))
         (fp_line (start 4.23 14.9) (end 4.23 12.9) (layer F.Fab) (width 0.15))
         (fp_line (start 4.23 12.9) (end 5.93 12.9) (layer F.Fab) (width 0.15))
-
-        (fp_text user DA (at -5.08 12.5 ${p.rot}) (layer F.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)))
-        )
-        (fp_text user CS (at 5.12 12.5 ${p.rot}) (layer F.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)))
-        )
-        (fp_text user GND (at 2.62 12.5 ${p.rot}) (layer F.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)))
-        )
-        (fp_text user VCC (at 0.15 14.4 ${p.rot}) (layer F.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)))
-        )
-        (fp_text user CL (at -2.48 12.5 ${p.rot}) (layer F.SilkS)
-          (effects (font (size 1 0.7) (thickness 0.1)))
-        )
         (pad 10 smd rect (at -5.08 14.35 ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ pad_1 })
         (pad 14 smd rect (at -5.08 13.45 ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${p.MOSI.str})
         (pad 11 smd rect (at -2.54 14.35 ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ pad_2 })
@@ -137,6 +121,32 @@ module.exports = {
         (fp_line (start 3.39 14.9) (end 3.39 12.9) (layer B.Fab) (width 0.15))
         (fp_line (start 5.93 12.9) (end 4.23 12.9) (layer B.Fab) (width 0.15))
         (fp_line (start 4.23 12.9) (end 4.23 14.9) (layer B.Fab) (width 0.15))
+        (pad 25 smd rect (at 2.54 13.45 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${p.SCK.str})
+        (pad 27 smd rect (at -5.08 13.45 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${p.CS.str})
+        (pad 23 smd rect (at -5.08 14.35 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${pad_1})
+        (pad 20 smd rect (at 5.08 14.35 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ pad_5 })
+        (pad 24 smd rect (at 5.08 13.45 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${p.MOSI.str})
+        (pad 26 smd rect (at -2.54 13.45 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${p.GND.str})
+        (pad 21 smd rect (at 2.54 14.35 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ pad_4 })
+        (pad 22 smd rect (at -2.54 14.35 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ pad_2 })
+    `
+
+    const labels = `
+        (fp_text user DA (at -5.08 12.5 ${p.rot}) (layer F.SilkS)
+          (effects (font (size 1 0.7) (thickness 0.1)))
+        )
+        (fp_text user CS (at 5.12 12.5 ${p.rot}) (layer F.SilkS)
+          (effects (font (size 1 0.7) (thickness 0.1)))
+        )
+        (fp_text user GND (at 2.62 12.5 ${p.rot}) (layer F.SilkS)
+          (effects (font (size 1 0.7) (thickness 0.1)))
+        )
+        (fp_text user VCC (at 0.15 14.4 ${p.rot}) (layer F.SilkS)
+          (effects (font (size 1 0.7) (thickness 0.1)))
+        )
+        (fp_text user CL (at -2.48 12.5 ${p.rot}) (layer F.SilkS)
+          (effects (font (size 1 0.7) (thickness 0.1)))
+        )
         (fp_text user CS (at -4.98 12.5 ${p.rot}) (layer B.SilkS)
           (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
         )
@@ -152,14 +162,6 @@ module.exports = {
         (fp_text user GND (at -2.38 12.5 ${p.rot}) (layer B.SilkS)
           (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
         )
-        (pad 25 smd rect (at 2.54 13.45 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${p.SCK.str})
-        (pad 27 smd rect (at -5.08 13.45 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${p.CS.str})
-        (pad 23 smd rect (at -5.08 14.35 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${pad_1})
-        (pad 20 smd rect (at 5.08 14.35 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ pad_5 })
-        (pad 24 smd rect (at 5.08 13.45 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${p.MOSI.str})
-        (pad 26 smd rect (at -2.54 13.45 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${p.GND.str})
-        (pad 21 smd rect (at 2.54 14.35 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ pad_4 })
-        (pad 22 smd rect (at -2.54 14.35 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ pad_2 })
     `
 
     const bottom = `
@@ -187,6 +189,10 @@ module.exports = {
     if(p.reverse) {
       final += front_jumpers;
       final += back_jumpers;
+
+      if(p.show_labels) {
+        final += labels;
+      }
     }
 
     final += bottom;
