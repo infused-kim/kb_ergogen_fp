@@ -9,23 +9,51 @@ module.exports = {
     GND: {type: 'net', value: 'GND'},
     CS: {type: 'net', value: 'CS'},
     show_labels: {type: 'boolean', value: true},
+    jumpers_at_bottom: false,
   },
   body: p => {
 
-    let pad_1 = p.MOSI.str;
-    let pad_2 = p.SCK.str;
-    let pad_4 = p.GND.str;
-    let pad_5 = p.CS.str;
+    let dst_nets = [
+      p.MOSI.str,
+      p.SCK.str,
+      p.VCC.str,
+      p.GND.str,
+      p.CS.str,
+    ];
+    local_nets = [
+      p.local_net("1").str,
+      p.local_net("2").str,
+      p.VCC.str,
+      p.local_net("4").str,
+      p.local_net("5").str,
+    ];
+
+    let socket_nets = dst_nets;
     if(p.reverse) {
-      pad_1 = p.local_net("1").str;
-      pad_2 = p.local_net("2").str;
-      pad_4 = p.local_net("4").str;
-      pad_5 = p.local_net("5").str;
+      socket_nets = local_nets;
     } else if(p.side == 'B') {
-      pad_1 = p.CS.str;
-      pad_2 = p.GND.str;
-      pad_4 = p.SCK.str;
-      pad_5 = p.MOSI.str;
+      socket_nets = dst_nets.slice().reverse();
+    }
+
+    let jumpers_offset = 0;
+    let jumpers_rot = 0;
+    let labels_offset = 0;
+    let label_vcc_offset = 0;
+
+    let jumpers_front_top = dst_nets;
+    let jumpers_front_bottom = local_nets;
+    let jumpers_back_top = dst_nets;
+    let jumpers_back_bottom = local_nets.slice().reverse();
+    if(p.jumpers_at_bottom) {
+      jumpers_offset = 5.7;
+      jumpers_rot = 180;
+      labels_offset = jumpers_offset + 2 + 1 + 0.1;
+      label_vcc_offset = 4.85;
+
+      jumpers_front_top = local_nets;
+      jumpers_front_bottom = dst_nets;
+      jumpers_back_top = local_nets.slice().reverse();
+      jumpers_back_bottom = dst_nets;
     }
 
     const top = `
@@ -59,30 +87,32 @@ module.exports = {
     `
 
     const front_jumpers = `
-        (fp_line (start 5.93 12.9) (end 5.93 14.9) (layer F.Fab) (width 0.15))
-        (fp_line (start -5.93 14.9) (end -5.93 12.9) (layer F.Fab) (width 0.15))
-        (fp_line (start -5.93 12.9) (end -4.23 12.9) (layer F.Fab) (width 0.15))
-        (fp_line (start -4.23 14.9) (end -5.93 14.9) (layer F.Fab) (width 0.15))
-        (fp_line (start -4.23 12.9) (end -4.23 14.9) (layer F.Fab) (width 0.15))
-        (fp_line (start -3.39 14.9) (end -3.39 12.9) (layer F.Fab) (width 0.15))
-        (fp_line (start -3.39 12.9) (end -1.69 12.9) (layer F.Fab) (width 0.15))
-        (fp_line (start -1.69 14.9) (end -3.39 14.9) (layer F.Fab) (width 0.15))
-        (fp_line (start -1.69 12.9) (end -1.69 14.9) (layer F.Fab) (width 0.15))
-        (fp_line (start 3.39 12.9) (end 3.39 14.9) (layer F.Fab) (width 0.15))
-        (fp_line (start 3.39 14.9) (end 1.69 14.9) (layer F.Fab) (width 0.15))
-        (fp_line (start 1.69 14.9) (end 1.69 12.9) (layer F.Fab) (width 0.15))
-        (fp_line (start 1.69 12.9) (end 3.39 12.9) (layer F.Fab) (width 0.15))
-        (fp_line (start 5.93 14.9) (end 4.23 14.9) (layer F.Fab) (width 0.15))
-        (fp_line (start 4.23 14.9) (end 4.23 12.9) (layer F.Fab) (width 0.15))
-        (fp_line (start 4.23 12.9) (end 5.93 12.9) (layer F.Fab) (width 0.15))
-        (pad 10 smd rect (at -5.08 14.35 ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ pad_1 })
-        (pad 14 smd rect (at -5.08 13.45 ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${p.MOSI.str})
-        (pad 11 smd rect (at -2.54 14.35 ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ pad_2 })
-        (pad 15 smd rect (at -2.54 13.45 ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${p.SCK.str})
-        (pad 12 smd rect (at 2.54 14.35 ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ pad_4 })
-        (pad 16 smd rect (at 2.54 13.45 ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${p.GND.str})
-        (pad 13 smd rect (at 5.08 14.35 ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ pad_5 })
-        (pad 17 smd rect (at 5.08 13.45 ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${p.CS.str})
+        (fp_line (start 5.93 ${12.9 + jumpers_offset}) (end 5.93 ${14.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start -5.93 ${14.9 + jumpers_offset}) (end -5.93 ${12.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start -5.93 ${12.9 + jumpers_offset}) (end -4.23 ${12.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start -4.23 ${14.9 + jumpers_offset}) (end -5.93 ${14.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start -4.23 ${12.9 + jumpers_offset}) (end -4.23 ${14.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start -3.39 ${14.9 + jumpers_offset}) (end -3.39 ${12.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start -3.39 ${12.9 + jumpers_offset}) (end -1.69 ${12.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start -1.69 ${14.9 + jumpers_offset}) (end -3.39 ${14.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start -1.69 ${12.9 + jumpers_offset}) (end -1.69 ${14.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start 3.39 ${12.9 + jumpers_offset}) (end 3.39 ${14.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start 3.39 ${14.9 + jumpers_offset}) (end 1.69 ${14.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start 1.69 ${14.9 + jumpers_offset}) (end 1.69 ${12.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start 1.69 ${12.9 + jumpers_offset}) (end 3.39 ${12.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start 5.93 ${14.9 + jumpers_offset}) (end 4.23 ${14.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start 4.23 ${14.9 + jumpers_offset}) (end 4.23 ${12.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+        (fp_line (start 4.23 ${12.9 + jumpers_offset}) (end 5.93 ${12.9 + jumpers_offset}) (layer F.Fab) (width 0.15))
+
+        (pad 14 smd rect (at -5.08 ${13.45 + jumpers_offset} ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ jumpers_front_top[0] })
+        (pad 15 smd rect (at -2.54 ${13.45 + jumpers_offset} ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ jumpers_front_top[1] })
+        (pad 16 smd rect (at 2.54 ${13.45 + jumpers_offset} ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ jumpers_front_top[3] })
+        (pad 17 smd rect (at 5.08 ${13.45 + jumpers_offset} ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ jumpers_front_top[4] })
+
+        (pad 10 smd rect (at -5.08 ${14.35 + jumpers_offset} ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ jumpers_front_bottom[0] })
+        (pad 11 smd rect (at -2.54 ${14.35 + jumpers_offset} ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ jumpers_front_bottom[1] })
+        (pad 12 smd rect (at 2.54 ${14.35 + jumpers_offset} ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ jumpers_front_bottom[3] })
+        (pad 13 smd rect (at 5.08 ${14.35 + jumpers_offset} ${90 + p.rot}) (size 0.6 1.2) (layers F.Cu F.Mask) ${ jumpers_front_bottom[4] })
     `
 
     const back = `
@@ -105,71 +135,74 @@ module.exports = {
     `
 
     const back_jumpers = `
-        (fp_line (start -5.93 12.9) (end -5.93 14.9) (layer B.Fab) (width 0.15))
-        (fp_line (start -5.93 14.9) (end -4.23 14.9) (layer B.Fab) (width 0.15))
-        (fp_line (start -4.23 12.9) (end -5.93 12.9) (layer B.Fab) (width 0.15))
-        (fp_line (start -4.23 14.9) (end -4.23 12.9) (layer B.Fab) (width 0.15))
-        (fp_line (start -3.39 14.9) (end -1.69 14.9) (layer B.Fab) (width 0.15))
-        (fp_line (start -1.69 12.9) (end -3.39 12.9) (layer B.Fab) (width 0.15))
-        (fp_line (start 4.23 14.9) (end 5.93 14.9) (layer B.Fab) (width 0.15))
-        (fp_line (start 5.93 14.9) (end 5.93 12.9) (layer B.Fab) (width 0.15))
-        (fp_line (start 3.39 12.9) (end 1.69 12.9) (layer B.Fab) (width 0.15))
-        (fp_line (start -1.69 14.9) (end -1.69 12.9) (layer B.Fab) (width 0.15))
-        (fp_line (start -3.39 12.9) (end -3.39 14.9) (layer B.Fab) (width 0.15))
-        (fp_line (start 1.69 12.9) (end 1.69 14.9) (layer B.Fab) (width 0.15))
-        (fp_line (start 1.69 14.9) (end 3.39 14.9) (layer B.Fab) (width 0.15))
-        (fp_line (start 3.39 14.9) (end 3.39 12.9) (layer B.Fab) (width 0.15))
-        (fp_line (start 5.93 12.9) (end 4.23 12.9) (layer B.Fab) (width 0.15))
-        (fp_line (start 4.23 12.9) (end 4.23 14.9) (layer B.Fab) (width 0.15))
-        (pad 25 smd rect (at 2.54 13.45 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${p.SCK.str})
-        (pad 27 smd rect (at -5.08 13.45 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${p.CS.str})
-        (pad 23 smd rect (at -5.08 14.35 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${pad_1})
-        (pad 20 smd rect (at 5.08 14.35 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ pad_5 })
-        (pad 24 smd rect (at 5.08 13.45 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${p.MOSI.str})
-        (pad 26 smd rect (at -2.54 13.45 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${p.GND.str})
-        (pad 21 smd rect (at 2.54 14.35 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ pad_4 })
-        (pad 22 smd rect (at -2.54 14.35 ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ pad_2 })
+        (fp_line (start -5.93 ${12.9 + jumpers_offset}) (end -5.93 ${14.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start -5.93 ${14.9 + jumpers_offset}) (end -4.23 ${14.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start -4.23 ${12.9 + jumpers_offset}) (end -5.93 ${12.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start -4.23 ${14.9 + jumpers_offset}) (end -4.23 ${12.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start -3.39 ${14.9 + jumpers_offset}) (end -1.69 ${14.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start -1.69 ${12.9 + jumpers_offset}) (end -3.39 ${12.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start 4.23 ${14.9 + jumpers_offset}) (end 5.93 ${14.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start 5.93 ${14.9 + jumpers_offset}) (end 5.93 ${12.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start 3.39 ${12.9 + jumpers_offset}) (end 1.69 ${12.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start -1.69 ${14.9 + jumpers_offset}) (end -1.69 ${12.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start -3.39 ${12.9 + jumpers_offset}) (end -3.39 ${14.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start 1.69 ${12.9 + jumpers_offset}) (end 1.69 ${14.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start 1.69 ${14.9 + jumpers_offset}) (end 3.39 ${14.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start 3.39 ${14.9 + jumpers_offset}) (end 3.39 ${12.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start 5.93 ${12.9 + jumpers_offset}) (end 4.23 ${12.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+        (fp_line (start 4.23 ${12.9 + jumpers_offset}) (end 4.23 ${14.9 + jumpers_offset}) (layer B.Fab) (width 0.15))
+
+        (pad 24 smd rect (at 5.08 ${13.45 + jumpers_offset} ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ jumpers_back_top[0] })
+        (pad 25 smd rect (at 2.54 ${13.45 + jumpers_offset} ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ jumpers_back_top[1] })
+        (pad 26 smd rect (at -2.54 ${13.45 + jumpers_offset} ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ jumpers_back_top[3] })
+        (pad 27 smd rect (at -5.08 ${13.45 + jumpers_offset} ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ jumpers_back_top[4] })
+
+        (pad 20 smd rect (at 5.08 ${14.35 + jumpers_offset} ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ jumpers_back_bottom[0] })
+        (pad 21 smd rect (at 2.54 ${14.35 + jumpers_offset} ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ jumpers_back_bottom[1] })
+        (pad 22 smd rect (at -2.54 ${14.35 + jumpers_offset} ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ jumpers_back_bottom[3] })
+        (pad 23 smd rect (at -5.08 ${14.35 + jumpers_offset} ${270 + p.rot}) (size 0.6 1.2) (layers B.Cu B.Mask) ${ jumpers_back_bottom[4] })
     `
 
     const labels = `
-        (fp_text user DA (at -5.08 12.5 ${p.rot}) (layer F.SilkS)
+        (fp_text user DA (at -5.08 ${12.5 + labels_offset} ${p.rot}) (layer F.SilkS)
           (effects (font (size 1 0.7) (thickness 0.1)))
         )
-        (fp_text user CS (at 5.12 12.5 ${p.rot}) (layer F.SilkS)
+        (fp_text user CS (at 5.12 ${12.5 + labels_offset} ${p.rot}) (layer F.SilkS)
           (effects (font (size 1 0.7) (thickness 0.1)))
         )
-        (fp_text user GND (at 2.62 12.5 ${p.rot}) (layer F.SilkS)
+        (fp_text user GND (at 2.62 ${12.5 + labels_offset} ${p.rot}) (layer F.SilkS)
           (effects (font (size 1 0.7) (thickness 0.1)))
         )
-        (fp_text user VCC (at 0.15 14.4 ${p.rot}) (layer F.SilkS)
+        (fp_text user VCC (at 0.15 ${14.4 + label_vcc_offset} ${p.rot}) (layer F.SilkS)
           (effects (font (size 1 0.7) (thickness 0.1)))
         )
-        (fp_text user CL (at -2.48 12.5 ${p.rot}) (layer F.SilkS)
+        (fp_text user CL (at -2.48 ${12.5 + labels_offset} ${p.rot}) (layer F.SilkS)
           (effects (font (size 1 0.7) (thickness 0.1)))
         )
-        (fp_text user CS (at -4.98 12.5 ${p.rot}) (layer B.SilkS)
+        (fp_text user CS (at -4.98 ${12.5 + labels_offset} ${p.rot}) (layer B.SilkS)
           (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
         )
-        (fp_text user VCC (at 0.15 14.4 ${p.rot}) (layer B.SilkS)
+        (fp_text user VCC (at 0.15 ${14.4 + label_vcc_offset} ${p.rot}) (layer B.SilkS)
           (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
         )
-        (fp_text user DA (at 5.22 12.5 ${p.rot}) (layer B.SilkS)
+        (fp_text user DA (at 5.22 ${12.5 + labels_offset} ${p.rot}) (layer B.SilkS)
           (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
         )
-        (fp_text user CL (at 2.72 12.5 ${p.rot}) (layer B.SilkS)
+        (fp_text user CL (at 2.72 ${12.5 + labels_offset} ${p.rot}) (layer B.SilkS)
           (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
         )
-        (fp_text user GND (at -2.38 12.5 ${p.rot}) (layer B.SilkS)
+        (fp_text user GND (at -2.38 ${12.5 + labels_offset} ${p.rot}) (layer B.SilkS)
           (effects (font (size 1 0.7) (thickness 0.1)) (justify mirror))
         )
     `
 
     const bottom = `
-      (pad 5 thru_hole circle (at 5.08 16.7 ${270 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${ pad_5 })
-      (pad 4 thru_hole oval (at 2.54 16.7 ${270 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${ pad_4 })
-      (pad 2 thru_hole oval (at -2.54 16.7 ${270 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${ pad_2 })
-      (pad 1 thru_hole oval (at -5.08 16.7 ${270 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${ pad_1 })
-      (pad 3 thru_hole oval (at 0 16.7 ${270 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${p.VCC.str})
+      (pad 1 thru_hole oval (at -5.08 16.7 ${270 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${ socket_nets[0] })
+      (pad 2 thru_hole oval (at -2.54 16.7 ${270 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${ socket_nets[1] })
+      (pad 3 thru_hole oval (at 0 16.7 ${270 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${ socket_nets[2] })
+      (pad 4 thru_hole oval (at 2.54 16.7 ${270 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${ socket_nets[3] })
+      (pad 5 thru_hole circle (at 5.08 16.7 ${270 + p.rot}) (size 1.7 1.7) (drill 1) (layers *.Cu *.Mask) ${ socket_nets[4] })
+
       (fp_line (start 5.4 13.4) (end 5.4 -11.9) (layer Dwgs.User) (width 0.15))
       (fp_line (start -5.4 13.4) (end -5.4 -11.9) (layer Dwgs.User) (width 0.15))
       (fp_line (start 5.4 -11.9) (end -5.4 -11.9) (layer Dwgs.User) (width 0.15))
