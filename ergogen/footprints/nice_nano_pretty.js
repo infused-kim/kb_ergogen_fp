@@ -1808,9 +1808,8 @@ module.exports = {
         (fp_line (start -15.24 -8.89) (end -17.78 -8.89) (layer B.Fab) (width 0.15))
         (fp_line (start 15.24 -8.89) (end -15.24 -8.89) (layer B.Fab) (width 0.15))
 
-        (fp_line (start -19.304 -3.556) (end -14.224 -3.556) (layer Dwgs.User) (width 0.15))
-        (fp_line (start -14.224 -3.556) (end -14.224 3.81) (layer Dwgs.User) (width 0.15))
-        (fp_line (start -14.224 3.81) (end -19.304 3.81) (layer Dwgs.User) (width 0.15))
+        (fp_line (start -19.304 -3.556) (end -17.78 -3.556) (layer Dwgs.User) (width 0.15))
+        (fp_line (start -17.78 3.81) (end -19.304 3.81) (layer Dwgs.User) (width 0.15))
         (fp_line (start -19.304 3.81) (end -19.304 -3.556) (layer Dwgs.User) (width 0.15))
       ${''/* Labels for pins */}
       ${ p.show_labels ? pin_labels : ''}
