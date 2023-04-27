@@ -24,11 +24,17 @@ module.exports = {
       hotswap: false,
       reverse: false,
       keycaps: false,
+      keycaps_x: 18,
+      keycaps_y: 17,
       show_1_5u_outline: false,
       from: undefined,
       to: undefined
     },
     body: p => {
+
+      const keycap_xo = 0.5 * p.keycaps_x;
+      const keycap_yo = 0.5 * p.keycaps_y;
+
       const standard = `
         (module PG1350 (layer F.Cu) (tedit 5DD50112)
         ${p.at /* parametric position */}
@@ -67,18 +73,12 @@ module.exports = {
         `
       const keycap = `
         ${'' /* keycap marks - 1u */}
-        (fp_line (start -8.75 -8.25) (end 8.75 -8.25) (layer Dwgs.User) (width 0.15))
-        (fp_line (start 8.75 -8.25) (end 8.75 8.25) (layer Dwgs.User) (width 0.15))
-        (fp_line (start 8.75 8.25) (end -8.75 8.25) (layer Dwgs.User) (width 0.15))
-        (fp_line (start -8.75 8.25) (end -8.75 -8.25) (layer Dwgs.User) (width 0.15))
+        (fp_line (start ${ -keycap_xo } ${ -keycap_yo }) (end ${ keycap_xo } ${ -keycap_yo }) (layer Dwgs.User) (width 0.15))
+        (fp_line (start ${ keycap_xo } ${ -keycap_yo }) (end ${ keycap_xo } ${ keycap_yo }) (layer Dwgs.User) (width 0.15))
+        (fp_line (start ${ keycap_xo } ${ keycap_yo }) (end ${ -keycap_xo } ${ keycap_yo }) (layer Dwgs.User) (width 0.15))
+        (fp_line (start ${ -keycap_xo } ${ keycap_yo }) (end ${ -keycap_xo } ${ -keycap_yo }) (layer Dwgs.User) (width 0.15))
         `
-      const keycap_1_5u = `
-        ${'' /* keycap marks - 1.5u */}
-        (fp_line (start -13.25 -8.25) (end 13.25 -8.25) (layer Dwgs.User) (width 0.15))
-        (fp_line (start 13.25 -8.25) (end 13.25 8.25) (layer Dwgs.User) (width 0.15))
-        (fp_line (start 13.25 8.25) (end -13.25 8.25) (layer Dwgs.User) (width 0.15))
-        (fp_line (start -13.25 8.25) (end -13.25 -8.25) (layer Dwgs.User) (width 0.15))
-        `
+
       function pins(def_neg, def_pos, def_side) {
         if(p.hotswap) {
           return `
@@ -131,22 +131,14 @@ module.exports = {
       if(p.reverse) {
         return `
           ${standard}
-          ${
-            !p.keycaps ? '' : (
-                p.show_1_5u_outline ? keycap_1_5u : keycap
-            )
-          }
+          ${p.keycaps ? keycap : ''}
           ${pins('-', '', 'B')}
           ${pins('', '-', 'F')})
           `
       } else {
         return `
           ${standard}
-          ${
-            !p.keycaps ? '' : (
-                p.show_1_5u_outline ? keycap_1_5u : keycap
-            )
-          }
+          ${p.keycaps ? keycap : ''}
           ${pins('-', '', 'B')})
           `
       }
