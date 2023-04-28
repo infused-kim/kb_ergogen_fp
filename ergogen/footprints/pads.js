@@ -61,7 +61,7 @@ module.exports = {
               pos_x_raw - (width + space) * (pad_cnt - 1) / 2
             );
 
-            let label_pos_y = -1 * (height / 2);
+            let label_pos_y = -1 * (height / 2 + 0.2);
             let label_justify = "(justify left)";
             if(label_at_bottom) {
               label_pos_y = label_pos_y * -1;
