@@ -4,6 +4,7 @@ module.exports = {
     side: 'B',
     reverse: false,
     show_outline_t430: false,
+    show_outline_x240: false,
   },
   body: p => {
     const top = `
@@ -65,6 +66,35 @@ module.exports = {
         (fp_line (start 8.5 5.5) (end 6.5 5.5) (layer B.Fab) (width 0.2))
     `
 
+    const outline_x240_front = `
+        (fp_line (start 7.5 6.5) (end 7.5 -6.5) (layer F.Fab) (width 0.2))
+        (fp_line (start -6 11.5) (end -6 -11.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 6 -11.5) (end -6 -11.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 6 11.5) (end -6 11.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 6 6.5) (end 6 11.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 13 6.5) (end 13 -6.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 13 6.5) (end 7.5 6.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 7.5 6.5) (end 6 6.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 13 -6.5) (end 7.5 -6.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 7.5 -6.5) (end 6 -6.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 6 -11.5) (end 6 -6.5) (layer F.Fab) (width 0.2))
+    `
+
+    const outline_x240_back = `
+        (fp_line (start 13 6.5) (end 7.5 6.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 7.5 6.5) (end 6 6.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 6 11.5) (end 6 6.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 7.5 -6.5) (end 7.5 6.5) (layer B.Fab) (width 0.2))
+        (fp_line (start -6 -11.5) (end -6 11.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 6 11.5) (end -6 11.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 6 -11.5) (end -6 -11.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 6 -6.5) (end 6 -11.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 13 -6.5) (end 13 6.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 13 -6.5) (end 7.5 -6.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 7.5 -6.5) (end 6 -6.5) (layer B.Fab) (width 0.2))
+    `
+
+
     const bottom = `
         (pad "" thru_hole circle (at 0 -9.5 180) (size 3.8 3.8) (drill 2.2) (layers *.Cu *.Mask))
         (pad "" thru_hole circle (at 0 9.5 180) (size 3.8 3.8) (drill 2.2) (layers *.Cu *.Mask))
@@ -80,11 +110,17 @@ module.exports = {
       if(p.show_outline_t430) {
         final += outline_t430_front;
       }
+      if(p.show_outline_x240) {
+        final += outline_x240_front;
+      }
     }
     if(p.side == "B" || p.reverse) {
       final += back;
       if(p.show_outline_t430) {
         final += outline_t430_back;
+      }
+      if(p.show_outline_x240) {
+        final += outline_x240_back;
       }
     }
 
