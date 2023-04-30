@@ -97,8 +97,6 @@ module.exports = {
         const shared_2 = `
           (pad "" np_thru_hole circle (at 0.025 -1.5 ${90 + p.rot}) (size 0.9 0.9) (drill 0.9) (layers *.Cu *.Mask))
           (pad "" np_thru_hole circle (at 0.025 1.5 ${90 + p.rot}) (size 0.9 0.9) (drill 0.9) (layers *.Cu *.Mask))
-          (pad "" np_thru_hole circle (at 0.025 1.5 ${270 + p.rot}) (size 0.9 0.9) (drill 0.9) (layers *.Cu *.Mask))
-          (pad "" np_thru_hole circle (at 0.025 -1.5 ${270 + p.rot}) (size 0.9 0.9) (drill 0.9) (layers *.Cu *.Mask))
         )
         `
 
