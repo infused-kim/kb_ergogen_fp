@@ -62,24 +62,34 @@ module.exports = {
             );
 
             let label_pos_y = -1 * (height / 2 + 0.2);
-            let label_justify = "(justify left)";
+            let label_justify_direction = "left";
             if(label_at_bottom) {
               label_pos_y = label_pos_y * -1;
-              label_justify = "(justify right)";
+              label_justify_direction = "right";
             }
 
-            if(label_at_bottom == false) {
+            if(label_at_bottom == false || layer == 'B') {
               if((rot > 0 && rot <= 180) || (rot <= -180)) {
-                label_justify = "(justify right)";
+                label_justify_direction = "right";
               } else {
-                label_justify = "(justify left)";
+                label_justify_direction = "left";
               }
             } else {
               if((rot > 0 && rot <= 180) || (rot <= -180)) {
-                label_justify = "(justify left)";
+                label_justify_direction = "left";
               } else {
-                label_justify = "(justify right)";
+                label_justify_direction = "right";
               }
+            }
+
+            let justify_mirror = '';
+            if(layer == 'B') {
+              justify_mirror = 'mirror'
+            }
+
+            let label_justify = '';
+            if(justify_mirror != '' || label_justify_direction != '') {
+              label_justify = `(justify ${label_justify_direction} ${justify_mirror})`;
             }
 
             let pad = `
