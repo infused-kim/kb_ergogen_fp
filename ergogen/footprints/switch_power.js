@@ -15,7 +15,10 @@ module.exports = {
       const shared_1 = `
         (module power_switch (layer F.Cu) (tedit 644556E6)
           ${p.at /* parametric position */}
-      `
+          (attr smd)
+
+      `;
+
       const front_switch = `
           (fp_text reference "${p.ref}" (at -3.6 0 ${-90 + p.rot}) (layer F.SilkS) ${p.ref_hide}
             (effects (font (size 1 1) (thickness 0.15)))

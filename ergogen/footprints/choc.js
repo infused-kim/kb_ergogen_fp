@@ -39,6 +39,7 @@ module.exports = {
       const standard = `
         (module PG1350 (layer F.Cu) (tedit 5DD50112)
         ${p.at /* parametric position */}
+        (attr virtual)
 
         ${'' /* footprint reference */}
         (fp_text reference "${p.ref}" (at 0 0) (layer F.SilkS) ${p.ref_hide} (effects (font (size 1.27 1.27) (thickness 0.15))))

@@ -9,7 +9,10 @@ module.exports = {
     const top = `
       (module text (layer F.Cu) (tedit 6449CD11)
         ${p.at /* parametric position */}
-    `
+        (attr virtual)
+
+      `;
+
     const front = `
       (fp_text user "${p.text}" (at 0 0) (layer F.SilkS)
         (effects (font (size 1 1) (thickness 0.15)))

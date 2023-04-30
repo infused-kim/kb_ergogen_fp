@@ -12,6 +12,8 @@ module.exports = {
       const top = `
         (module sw_reset_side (layer F.Cu) (tedit 64473C6F)
           ${p.at /* parametric position */}
+          (attr smd)
+
           (fp_text reference "${p.ref}" (at 0 3.5 ${p.rot}) (layer ${p.side}.SilkS) ${p.ref_hide}
             (effects (font (size 1 1) (thickness 0.15)))
           )

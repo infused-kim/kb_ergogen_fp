@@ -10,11 +10,13 @@ module.exports = {
     const top = `
       (module trackpoint_mount_t430 (layer F.Cu) (tedit 6449FFC5)
         ${p.at /* parametric position */}
+        (attr virtual)
 
         (fp_text reference "${p.ref}" (at 0 0) (layer ${p.side}.SilkS) ${p.ref_hide}
           (effects (font (size 1 1) (thickness 0.15)))
         )
-    `
+    `;
+
     const front = `
         (fp_circle (center 0 -9.5) (end -2.15 -9.5) (layer F.CrtYd) (width 0.05))
         (fp_circle (center 0 -9.5) (end -1.9 -9.5) (layer Cmts.User) (width 0.15))

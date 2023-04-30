@@ -160,6 +160,8 @@ module.exports = {
         const fp = `
           (module pads (layer F.Cu) (tedit 6446BF3D)
             ${p.at /* parametric position */}
+            (attr smd)
+
             (fp_text reference "${p.ref}" (at 0 2.2) (layer F.SilkS) ${p.ref_hide}
               (effects (font (size 1 1) (thickness 0.15)))
             )

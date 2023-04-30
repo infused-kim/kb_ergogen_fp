@@ -15,6 +15,8 @@ module.exports = {
         const footprint = `
     (module ComboDiode (layer F.Cu) (tedit 5B24D78E)
         ${p.at /* parametric position */}
+        (attr virtual)
+
         ${'' /* footprint reference */}
         (fp_text reference "${p.ref}" (at 0 0) (layer F.SilkS) ${p.ref_hide} (effects (font (size 1.27 1.27) (thickness 0.15))))
         (fp_text value "" (at 0 0) (layer F.SilkS) hide (effects (font (size 1.27 1.27) (thickness 0.15))))

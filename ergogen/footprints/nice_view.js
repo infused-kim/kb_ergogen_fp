@@ -59,6 +59,7 @@ module.exports = {
     const top = `
       (module nice!view (layer F.Cu) (tedit 6448AF5B)
         ${p.at /* parametric position */}
+        (attr virtual)
         (fp_text reference "${p.ref}" (at 0 20 ${p.rot}) (layer ${p.side}.SilkS) ${p.ref_hide}
           (effects (font (size 1 1) (thickness 0.15)))
         )

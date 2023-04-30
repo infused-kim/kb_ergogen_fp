@@ -233,6 +233,7 @@ module.exports = {
       return `
       (module ProMicro (layer F.Cu) (tedit 6135B927)
         ${p.at /* parametric position */}
+        (attr virtual)
 
       ${'' /* footprint description, tags and reference */}
       (descr "Solder-jumper reversible Pro Micro footprint")

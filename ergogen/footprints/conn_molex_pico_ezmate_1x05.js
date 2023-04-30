@@ -13,7 +13,10 @@ module.exports = {
       const top = `
       (module conn_molex_pico_ezmate_1x05 (layer F.Cu) (tedit 644602FB)
         ${p.at /* parametric position */}
-      `
+        (attr smd)
+
+      `;
+
       const front = `
         (fp_text reference "${p.ref}" (at 0 0.25 ${p.rot}) (layer F.SilkS) ${p.ref_hide}
           (effects (font (size 1 1) (thickness 0.15)))

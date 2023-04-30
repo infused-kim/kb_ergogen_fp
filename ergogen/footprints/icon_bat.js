@@ -11,8 +11,9 @@ module.exports = {
       const top = `
         (module icon_bat (layer F.Cu) (tedit 64461058)
           ${p.at /* parametric position */}
+          (attr virtual)
 
-      `
+      `;
 
       const front = `
           (fp_text reference "${p.ref}" (at 0 3 ${p.rot}) (layer F.SilkS) ${p.ref_hide}
