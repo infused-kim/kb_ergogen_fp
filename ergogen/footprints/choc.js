@@ -67,12 +67,17 @@ module.exports = {
 
 
         ${''/* middle shaft */}
-        (pad "" np_thru_hole circle (at 0 0) (size 3.429 3.429) (drill 3.429) (layers *.Cu *.Mask))
+        (pad "" np_thru_hole circle (at 0 0) (size 3.429 3.429) (drill 3.429) (layers F.Cu F.Mask))
 
         ${''/* stabilizers */}
         (pad "" np_thru_hole circle (at 5.5 0) (size 1.7018 1.7018) (drill 1.7018) (layers *.Cu *.Mask))
         (pad "" np_thru_hole circle (at -5.5 0) (size 1.7018 1.7018) (drill 1.7018) (layers *.Cu *.Mask))
         `
+
+      const hotswap = `
+        ${''/* Middle hole for hot swap sockets */}
+        (pad "" np_thru_hole circle (at 0 -5.95) (size 3 3) (drill 3) (layers *.Cu *.Mask))
+      `
       const keycap = `
         ${'' /* keycap marks - 1u */}
         (fp_line (start ${ -keycap_xo } ${ -keycap_yo }) (end ${ keycap_xo } ${ -keycap_yo }) (layer Dwgs.User) (width 0.15))
@@ -108,7 +113,6 @@ module.exports = {
         const hotswap = `
           ${'' /* holes */}
           (pad "" np_thru_hole circle (at ${def_pos}5 -3.75) (size 3 3) (drill 3) (layers *.Cu *.Mask))
-          (pad "" np_thru_hole circle (at 0 -5.95) (size 3 3) (drill 3) (layers *.Cu *.Mask))
 
           ${'' /* net pads */}
           ${pad_1}
@@ -173,6 +177,7 @@ module.exports = {
         return `
           ${standard}
           ${p.keycaps ? keycap : ''}
+          ${p.hotswap ? hotswap : ''}
           ${pins('-', '', 'B')}
           ${pins('', '-', 'F')})
           `
