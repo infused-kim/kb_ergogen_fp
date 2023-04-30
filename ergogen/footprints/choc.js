@@ -67,7 +67,7 @@ module.exports = {
 
 
         ${''/* middle shaft */}
-        (pad "" np_thru_hole circle (at 0 0) (size 3.429 3.429) (drill 3.429) (layers F.Cu F.Mask))
+        (pad "" np_thru_hole circle (at 0 0) (size 3.429 3.429) (drill 3.429) (layers *.Cu *.Mask))
 
         ${''/* stabilizers */}
         (pad "" np_thru_hole circle (at 5.5 0) (size 1.7018 1.7018) (drill 1.7018) (layers *.Cu *.Mask))
@@ -78,6 +78,14 @@ module.exports = {
         ${''/* Middle hole for hot swap sockets */}
         (pad "" np_thru_hole circle (at 0 -5.95) (size 3 3) (drill 3) (layers *.Cu *.Mask))
       `
+
+      const hotswap_tht = `
+      (pad 2 thru_hole circle (at 0 5.9) (size 2.032 2.032) (drill 1.27) (layers *.Cu *.Mask) ${p.to.str})
+      `
+      const tht = `
+      (pad 2 thru_hole circle (at 0 -5.9) (size 2.032 2.032) (drill 1.27) (layers *.Cu *.Mask) ${p.to.str})
+      `
+
       const keycap = `
         ${'' /* keycap marks - 1u */}
         (fp_line (start ${ -keycap_xo } ${ -keycap_yo }) (end ${ keycap_xo } ${ -keycap_yo }) (layer Dwgs.User) (width 0.15))
@@ -152,13 +160,11 @@ module.exports = {
         const tht = `
           ${''/* pins */}
           (pad 1 thru_hole circle (at ${def_pos}5 -3.8) (size 2.032 2.032) (drill 1.27) (layers *.Cu *.Mask) ${p.from.str})
-          (pad 2 thru_hole circle (at ${def_pos}0 -5.9) (size 2.032 2.032) (drill 1.27) (layers *.Cu *.Mask) ${p.to.str})
         `
 
         const hotswap_tht = `
           ${''/* pins - with inverse y direction */}
           (pad 1 thru_hole circle (at ${def_pos}5 3.8) (size 2.032 2.032) (drill 1.27) (layers *.Cu *.Mask) ${p.from.str})
-          (pad 2 thru_hole circle (at ${def_pos}0 5.9) (size 2.032 2.032) (drill 1.27) (layers *.Cu *.Mask) ${p.to.str})
         `
 
         let final = '';
@@ -177,7 +183,8 @@ module.exports = {
         return `
           ${standard}
           ${p.keycaps ? keycap : ''}
-          ${p.hotswap ? hotswap : ''}
+          ${p.hotswap ? hotswap : tht}
+          ${p.hotswap && p.hotswap_tht ? hotswap_tht : ''}
           ${pins('-', '', 'B')}
           ${pins('', '-', 'F')})
           `
