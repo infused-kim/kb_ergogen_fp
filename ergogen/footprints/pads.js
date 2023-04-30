@@ -100,7 +100,7 @@ module.exports = {
         const gen_pads = (nets, width, height, space, rot, layer, label_at_bottom, mirror) => {
 
             if(mirror) {
-                nets = nets.reverse();
+                nets = nets.slice().reverse();
             }
 
             let pads = '';
