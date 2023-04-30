@@ -2,7 +2,7 @@
 // EVQ-P7A01P
 module.exports = {
     params: {
-      designator: 'CONN',
+      designator: 'SW',
       side: 'F',
       reverse: false,
       from: {type: 'net', value: 'GND'},
@@ -65,7 +65,7 @@ module.exports = {
       (pad 2 smd rect (at 0.72 1.8 ${270 + p.rot}) (size 1.4 1.05) (layers B.Cu B.Paste B.Mask) ${p.to.str})
       (pad 2 smd rect (at 0.72 -1.8 ${270 + p.rot}) (size 1.4 1.05) (layers B.Cu B.Paste B.Mask) ${p.to.str})
       (pad 1 smd rect (at -0.72 1.8 ${270 + p.rot}) (size 1.4 1.05) (layers B.Cu B.Paste B.Mask) ${p.from.str})
-      (fp_text user REF** (at 0 3.5 ${p.rot}) (layer B.SilkS)
+      (fp_text user ${p.ref} (at 0 3.5 ${p.rot}) (layer B.SilkS) ${p.ref_hide}
         (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       )
       `
