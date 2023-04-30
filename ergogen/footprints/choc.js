@@ -82,13 +82,36 @@ module.exports = {
       `
 
       function pins(def_neg, def_pos, def_side) {
+        let pad_1 = `
+          (pad 1 connect custom (at ${def_neg}3.275 -5.95 ${p.rot}) (size 0.5 0.5) (layers ${def_side}.Cu ${def_side}.Mask)
+          (zone_connect 0)
+          (options (clearance outline) (anchor rect))
+          (primitives
+            (gr_poly (pts
+              (xy -1.3 -1.3) (xy -1.3 1.3) (xy 0.05 1.3) (xy 1.3 0.25) (xy 1.3 -1.3)
+            ) (width 0))
+          ) ${p.from.str})
+        `;
+        if(def_side == 'B') {
+          pad_1 = `
+          (pad 1 connect custom (at ${def_neg}3.275 -5.95 ${p.rot}) (size 0.5 0.5) (layers ${def_side}.Cu ${def_side}.Mask)
+          (zone_connect 0)
+          (options (clearance outline) (anchor rect))
+          (primitives
+            (gr_poly (pts
+              (xy -1.3 -1.3) (xy -1.3 0.25) (xy -0.05 1.3) (xy 1.3 1.3) (xy 1.3 -1.3)
+            ) (width 0))
+          ) ${p.from.str})
+          `
+        }
+
         const hotswap = `
           ${'' /* holes */}
           (pad "" np_thru_hole circle (at ${def_pos}5 -3.75) (size 3 3) (drill 3) (layers *.Cu *.Mask))
           (pad "" np_thru_hole circle (at 0 -5.95) (size 3 3) (drill 3) (layers *.Cu *.Mask))
 
           ${'' /* net pads */}
-          (pad 1 smd rect (at ${def_neg}3.275 -5.95 ${p.rot}) (size 2.6 2.6) (layers ${def_side}.Cu ${def_side}.Paste ${def_side}.Mask)  ${p.from.str})
+          ${pad_1}
           (pad 2 smd rect (at ${def_pos}8.275 -3.75 ${p.rot}) (size 2.6 2.6) (layers ${def_side}.Cu ${def_side}.Paste ${def_side}.Mask)  ${p.to.str})
 
           ${''/* hotswap outline - front */}
