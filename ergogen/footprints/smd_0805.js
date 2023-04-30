@@ -78,24 +78,39 @@ module.exports = {
             );
 
             let label_pos_y = -1 * (height / 2 + 0.2);
-            let label_justify = "(justify left)";
+            let label_justify_direction = "left";
             if(label_at_bottom) {
               label_pos_y = label_pos_y * -1;
-              label_justify = "(justify right)";
+              label_justify_direction = "right";
             }
 
-            if(label_at_bottom == false) {
+            if(label_at_bottom == false || layer == 'B') {
               if((rot > 0 && rot <= 180) || (rot <= -180)) {
-                label_justify = "(justify right)";
+                label_justify_direction = "right";
               } else {
-                label_justify = "(justify left)";
+                label_justify_direction = "left";
               }
             } else {
               if((rot > 0 && rot <= 180) || (rot <= -180)) {
-                label_justify = "(justify left)";
+                label_justify_direction = "left";
               } else {
-                label_justify = "(justify right)";
+                label_justify_direction = "right";
               }
+            }
+
+            let justify_mirror = '';
+            if(layer == 'B') {
+              justify_mirror = 'mirror'
+            }
+
+            let label_justify = '';
+            if(justify_mirror != '' || label_justify_direction != '') {
+              label_justify = `(justify ${label_justify_direction} ${justify_mirror})`;
+            }
+
+            let label_fab_justify = '';
+            if(justify_mirror) {
+              label_fab_justify = `(justify ${justify_mirror})`;
             }
 
             const pad_num = pad_idx*2+1;
@@ -120,7 +135,7 @@ module.exports = {
             if(net_label) {
               pad += `
               (fp_text user "${net_label}" (at ${0 + pos_x} 0 ${90 + rot}) (layer ${layer}.Fab)
-                (effects (font (size 0.5 0.5) (thickness 0.08)))
+                (effects (font (size 0.5 0.5) (thickness 0.08)) ${label_fab_justify})
               )
               (fp_text user "${net_label}" (at ${pos_x} ${label_pos_y} ${90 + rot}) (layer ${layer}.SilkS)
                   (effects (font (size 1 1) (thickness 0.1)) ${label_justify})
