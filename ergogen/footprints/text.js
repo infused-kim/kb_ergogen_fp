@@ -11,29 +11,18 @@ module.exports = {
     text: 'Awesomeness',
   },
   body: p => {
-    const top = `
-      (module text (layer F.Cu) (tedit 6449CD11)
-        ${p.at /* parametric position */}
-        (attr virtual)
-
-      `;
-
     const front = `
-      (fp_text user "${p.text}" (at 0 0) (layer F.SilkS)
+      (gr_text "${p.text}" ${p.at} (layer F.SilkS)
         (effects (font (size 1 1) (thickness 0.15)))
       )
     `
     const back = `
-      (fp_text user "${p.text}" (at 0 0) (layer B.SilkS)
+      (gr_text "${p.text}" ${p.at} (layer B.SilkS)
         (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
       )
     `
 
-    const bottom = `
-    )
-    `
-
-    let final = top;
+    let final = '';
 
     if(p.side == "F" || p.reverse) {
       final += front;
@@ -41,8 +30,6 @@ module.exports = {
     if(p.side == "B" || p.reverse) {
       final += back;
     }
-
-    final += bottom;
 
     return final;
   }
