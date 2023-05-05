@@ -1,3 +1,5 @@
+// Author: Ergogen + @infused-kim improvements
+//
 // Kailh Choc PG1350
 // Nets
 //    from: corresponds to pin 1
@@ -5,18 +7,27 @@
 // Params
 //    hotswap: default is false
 //      if true, will include holes and pads for Kailh choc hotswap sockets
+//    hotswap_tht: default is false
+//      if true, will also include holes to solder switches
 //    reverse: default is false
 //      if true, will flip the footprint such that the pcb can be reversible
 //    keycaps: default is false
 //      if true, will add choc sized keycap box around the footprint
+//    keycaps_x: default is 18
+//    keycaps_y: default is 17
+//      Allows you to adjust the width of the keycap to. For example, to show
+//      a 1.5u outline for easier aligning.
 //
 // note: hotswap and reverse can be used simultaneously
 //
-// Changes compared to original ergogen footprint:
-//  - Added hotswap socket outlines to silk screen
+// @infused-kim's improvements:
+//  - Added hotswap socket outlines
 //  - Moved switch corner marks from user layer to silk screen
-//  - Added option to show 1.5u keycap outline
-//  - Changed keycap outline to show the exact choc keycap dimensions instead of padded dimensions (17.5mm length vs 18mm)
+//  - Added option to adjust keycap size outlines (to show 1.5u outline)
+//  - Added option to add hotswap sockets and direct soldering holes at the
+//    same time
+//  - Made hotswap pads not overlap holes to fix DRC errors
+//  - Fixed DRC errors "Drilled holes co-located"
 
 module.exports = {
     params: {
@@ -27,7 +38,6 @@ module.exports = {
       keycaps: false,
       keycaps_x: 18,
       keycaps_y: 17,
-      show_1_5u_outline: false,
       from: undefined,
       to: undefined
     },

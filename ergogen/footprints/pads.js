@@ -1,3 +1,12 @@
+// Author: @infused-kim
+//
+// Description:
+// Let's you place solder pads on the PCB that can be used instead of
+// connectors. Useful for batteries and other peripherals in case the end-user
+// does not have the right cable connector.
+//
+// Fully reversible and pads are mirrored on the back side.
+
 module.exports = {
     params: {
         designator: 'PAD',

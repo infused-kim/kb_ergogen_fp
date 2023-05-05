@@ -1,5 +1,14 @@
-// Compatible with
+// Author: @infused-kim
+//
+// Description:
+// Reversible footprint for nice nano
+
+// Should be compatible with:
 // EVQ-P7A01P
+//
+// WARNING: This is not the same reset switch commonly used in the keyboard
+// community. This switch faces sideways and is lower profile.
+
 module.exports = {
     params: {
       designator: 'SW',

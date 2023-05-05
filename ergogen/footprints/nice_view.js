@@ -1,3 +1,9 @@
+// Author: @infused-kim
+//
+// Description:
+// Reversible footprint for nice!view display. Includes an outline of the
+// display to make positioning easier.
+
 module.exports = {
   params: {
     designator: 'DISP',

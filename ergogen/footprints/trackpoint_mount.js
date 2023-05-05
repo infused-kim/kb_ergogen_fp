@@ -1,3 +1,15 @@
+// Author: @infused-kim
+//
+// Description:
+// Adds mounting holes for a trackpoint to the PCB.
+//
+// Should be compatible with:
+//  - Thinkpad T430
+//  - Thinkpad T440 / X240
+//
+// Check this page for other models:
+// https://deskthority.net/wiki/TrackPoint_Hardware
+
 module.exports = {
   params: {
     designator: 'TP',

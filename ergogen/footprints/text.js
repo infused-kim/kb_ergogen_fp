@@ -1,3 +1,8 @@
+// Author: @infused-kim
+//
+// Description:
+// Allows oyu to place text on the PCB.
+
 module.exports = {
   params: {
     designator: 'TXT',

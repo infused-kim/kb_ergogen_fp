@@ -1,3 +1,8 @@
+// Author: @infused-kim
+//
+// Description:
+// Power switch for wireless boards.
+//
 // Should be compatible with:
 //  - G-Switch MK-12C02-G015
 //  - Alps SSSS811101

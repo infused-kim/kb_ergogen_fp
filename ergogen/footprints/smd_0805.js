@@ -1,3 +1,11 @@
+// Author: @infused-kim
+//
+// Description:
+// Let's you place multiple SMD 0805 components, such as resistors and
+// capacitors.
+//
+// Fully reversible and component order is mirrored on the back.
+
 module.exports = {
     params: {
         designator: 'SMD',

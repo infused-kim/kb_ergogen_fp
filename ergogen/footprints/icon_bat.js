@@ -1,3 +1,8 @@
+// Author: @infused-kim
+//
+// Description:
+// Shows battery icons on the PCB silkscreen.
+
 module.exports = {
     params: {
       designator: 'ICON',

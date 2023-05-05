@@ -1,3 +1,9 @@
+// Author: Ergogen + @infused-kim improvements
+//
+// @infused-kim's improvements:
+//  - Added option to hide thru-holes
+//  - Added virtual attribute to silence DRC error
+
 module.exports = {
     params: {
         designator: 'D',

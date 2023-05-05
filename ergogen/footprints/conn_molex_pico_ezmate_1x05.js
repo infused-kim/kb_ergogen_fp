@@ -1,3 +1,16 @@
+// Author: @infused-kim
+//
+// Description:
+// PCB footprint for for molex pico ezmate connector with 5 pins. Used to
+// connect a trackpoint to the PCB on my keyboards.
+//
+// This connector was chosen over the more common JST connector, because it
+// has a mated profile height of only 1.65 mm. This is lower than the Kailh
+// Choc hotswap sockets.
+//
+// It should also be compatible with the JST ACH connector (which is almost the
+// same).
+
 module.exports = {
     params: {
       designator: 'CONN',

@@ -1,3 +1,23 @@
+// Author: @infused-kim
+//
+// Description:
+// PCB footprint for for molex pico ezmate connector with 2 pins. Ideal for
+// battery connections.
+//
+// This connector was chosen over the more common JST connector, because it
+// has a mated profile height of only 1.65 mm. This is lower than the Kailh
+// Choc hotswap sockets.
+//
+// It should also be compatible with the JST ACH connector (which is almost the
+// same).
+//
+// One downside is that there are almost no batteries that ship with this
+// connector. The one exception is the Nintendo Joycon 500 mAh battery.
+//
+// If you want to use the common 301230 battery, you will either need to crimp
+// the connector yourself or buy a pre-crimped connector that you attach to
+// the battery wires (available on digikey).
+
 module.exports = {
     params: {
       designator: 'CONN',
