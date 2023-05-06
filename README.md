@@ -50,14 +50,30 @@ git add .
 git commit -m "Updated infused-kim footprint submodule"
 ```
 
+### How to clone your ergogen repo
+
+Users who clone your ergogen repo, must also update the submodule. So you should instruct them to either clone with the `--recursive` mode...
+
+```bash
+git clone --recursive git@github.com:your-user/your-keyboard.git
+```
+
+Or do init and update the submodules in a repo that was already cloned repo without the `--recursive` argument...
+
+```bash
+git clone git@github.com:your-user/your-keyboard.git
+cd your-keyboard
+git submodule init && git submodule update
+```
+
+Git will load exactly the same version of the footprints that you used. So you don't need to worry about accidental updates to incompatible future versions.
+
 ## License
 
 **TLDR:**
 
 - Personal use with attribution
 - Commercial use not allowed
-
-Shield: [![CC BY-SA 4.0][cc-by-sa-shield]][cc-by-sa]
 
 This work is licensed under a
 [Creative Commons Attribution-ShareAlike 4.0 International License][cc-by-sa].
