@@ -4,9 +4,18 @@
 >
 > These footprints have not been tested and are still under active development. Use them at your own risk.
 
+1. [Installation](#installation)
+    1. [How to add the footprints as a git submodule](#how-to-add-the-footprints-as-a-git-submodule)
+    2. [How to use them in your ergogen config](#how-to-use-them-in-your-ergogen-config)
+    3. [How to update the submodule](#how-to-update-the-submodule)
+    4. [How to clone your ergogen repo](#how-to-clone-your-ergogen-repo)
+2. [How to design or modify ergogen footprints](#how-to-design-or-modify-ergogen-footprints)
+3. [License](#license)
+
+
 ## Installation
 
-### 1. Add the footprints as a git submodule
+### How to add the footprints as a git submodule
 
 Add the footprint library as a git submodule to your project...
 
@@ -16,7 +25,7 @@ git submodule add git@github.com:infused-kim/kb_ergogen_fp.git ergogen/footprint
 
 Make sure to adjust the path to a subfolder in your ergogen folder (`ergogen/footprints/infused-kim/` in the example above.)
 
-### 2. Use them in your ergogen config
+### How to use them in your ergogen config
 
 You can then use the footprints in your ergogen config.yaml:
 
@@ -67,6 +76,12 @@ git submodule init && git submodule update
 ```
 
 Git will load exactly the same version of the footprints that you used. So you don't need to worry about accidental updates to incompatible future versions.
+
+## How to design or modify ergogen footprints
+
+I wrote a [guide on how to convert KiCad footprints to ergogen that you can find here](https://www.notion.so/nilnil/Convert-Kicad-Footprint-to-Ergogen-8340ce87ad554c69af4e3f92bc9a0898?pvs=4).
+
+If you want to modify any of the footprints here, you can find many of the original KiCad v5 footprint files I used or created in the [./kicad_footprints/](./kicad_footprints/) directory.
 
 ## License
 
