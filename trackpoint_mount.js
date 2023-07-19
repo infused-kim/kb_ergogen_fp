@@ -15,6 +15,13 @@ module.exports = {
     designator: 'TP',
     side: 'B',
     reverse: false,
+
+    // T430: 3.5
+    // T460 (red one): 3.5
+    // X240: 5.5
+    drill: 5.5,
+    outline: 0.25,
+
     show_outline_t430: false,
     show_outline_x240: false,
   },
@@ -108,11 +115,11 @@ module.exports = {
         (fp_line (start 7.5 -6.5) (end 6 -6.5) (layer B.Fab) (width 0.2))
     `
 
-
+    const size = p.drill + (p.outline * 2)
     const bottom = `
         (pad "" thru_hole circle (at 0 -9.5 180) (size 3.8 3.8) (drill 2.2) (layers *.Cu *.Mask))
+        (pad 1 np_thru_hole circle (at 0 0 180) (size ${size} ${size}) (drill ${p.drill}) (layers *.Cu *.Mask))
         (pad "" thru_hole circle (at 0 9.5 180) (size 3.8 3.8) (drill 2.2) (layers *.Cu *.Mask))
-        (pad 1 np_thru_hole circle (at 0 0 180) (size 3.7 3.7) (drill 3.7) (layers *.Cu *.Mask))
       )
     `
 
