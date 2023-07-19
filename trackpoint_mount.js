@@ -24,6 +24,7 @@ module.exports = {
 
     show_outline_t430: false,
     show_outline_x240: false,
+    show_board: false,
   },
   body: p => {
     const top = `
@@ -88,31 +89,35 @@ module.exports = {
     `
 
     const outline_x240_front = `
-        (fp_line (start 7.5 6.5) (end 7.5 -6.5) (layer F.Fab) (width 0.2))
-        (fp_line (start -6 11.5) (end -6 -11.5) (layer F.Fab) (width 0.2))
-        (fp_line (start 6 -11.5) (end -6 -11.5) (layer F.Fab) (width 0.2))
-        (fp_line (start 6 11.5) (end -6 11.5) (layer F.Fab) (width 0.2))
-        (fp_line (start 6 6.5) (end 6 11.5) (layer F.Fab) (width 0.2))
-        (fp_line (start 13 6.5) (end 13 -6.5) (layer F.Fab) (width 0.2))
-        (fp_line (start 13 6.5) (end 7.5 6.5) (layer F.Fab) (width 0.2))
-        (fp_line (start 7.5 6.5) (end 6 6.5) (layer F.Fab) (width 0.2))
-        (fp_line (start 13 -6.5) (end 7.5 -6.5) (layer F.Fab) (width 0.2))
-        (fp_line (start 7.5 -6.5) (end 6 -6.5) (layer F.Fab) (width 0.2))
-        (fp_line (start 6 -11.5) (end 6 -6.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 12.25 -6.5) (end 6.75 -6.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 12.25 6.5) (end 6.75 6.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 12.25 6.5) (end 12.25 -6.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 6.75 11.5) (end -6.75 11.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 6.75 -11.5) (end -6.75 -11.5) (layer F.Fab) (width 0.2))
+        (fp_line (start -6.75 11.5) (end -6.75 -11.5) (layer F.Fab) (width 0.2))
+        (fp_line (start 6.75 11.5) (end 6.75 -11.5) (layer F.Fab) (width 0.2))
     `
 
     const outline_x240_back = `
-        (fp_line (start 13 6.5) (end 7.5 6.5) (layer B.Fab) (width 0.2))
-        (fp_line (start 7.5 6.5) (end 6 6.5) (layer B.Fab) (width 0.2))
-        (fp_line (start 6 11.5) (end 6 6.5) (layer B.Fab) (width 0.2))
-        (fp_line (start 7.5 -6.5) (end 7.5 6.5) (layer B.Fab) (width 0.2))
-        (fp_line (start -6 -11.5) (end -6 11.5) (layer B.Fab) (width 0.2))
-        (fp_line (start 6 11.5) (end -6 11.5) (layer B.Fab) (width 0.2))
-        (fp_line (start 6 -11.5) (end -6 -11.5) (layer B.Fab) (width 0.2))
-        (fp_line (start 6 -6.5) (end 6 -11.5) (layer B.Fab) (width 0.2))
-        (fp_line (start 13 -6.5) (end 13 6.5) (layer B.Fab) (width 0.2))
-        (fp_line (start 13 -6.5) (end 7.5 -6.5) (layer B.Fab) (width 0.2))
-        (fp_line (start 7.5 -6.5) (end 6 -6.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 12.25 -6.5) (end 6.75 -6.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 12.25 -6.5) (end 12.25 6.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 6.75 -11.5) (end -6.75 -11.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 6.75 11.5) (end -6.75 11.5) (layer B.Fab) (width 0.2))
+        (fp_line (start -6.75 -11.5) (end -6.75 11.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 6.75 -11.5) (end 6.75 11.5) (layer B.Fab) (width 0.2))
+        (fp_line (start 12.25 6.5) (end 6.75 6.5) (layer B.Fab) (width 0.2))
+    `
+
+    const outline_x240_board = `
+        (fp_line (start 39.25 12) (end 23.25 12) (layer Dwgs.User) (width 0.2))
+        (fp_line (start 23.25 5.5) (end 23.25 12) (layer Dwgs.User) (width 0.2))
+        (fp_line (start 23.25 -5.5) (end 23.25 5.5) (layer Dwgs.User) (width 0.2))
+        (fp_line (start 23.25 5.5) (end 12.25 5.5) (layer Dwgs.User) (width 0.2))
+        (fp_line (start 23.25 -5.5) (end 12.25 -5.5) (layer Dwgs.User) (width 0.2))
+        (fp_line (start 39.25 -22) (end 39.25 12) (layer Dwgs.User) (width 0.2))
+        (fp_line (start 39.25 -22) (end 23.25 -22) (layer Dwgs.User) (width 0.2))
+        (fp_line (start 23.25 -22) (end 23.25 -5.5) (layer Dwgs.User) (width 0.2))
+        (fp_line (start 12.25 -5.5) (end 12.25 5.5) (layer Dwgs.User) (width 0.2))
     `
 
     const size = p.drill + (p.outline * 2)
@@ -133,6 +138,10 @@ module.exports = {
       }
       if(p.show_outline_x240) {
         final += outline_x240_front;
+
+        if(p.show_board) {
+          final += outline_x240_board
+        }
       }
     }
     if(p.side == "B" || p.reverse) {
