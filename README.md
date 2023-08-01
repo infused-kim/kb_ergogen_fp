@@ -38,8 +38,8 @@ pcbs:
             promicro:
                 what: infused-kim/nice_nano_pretty
                 params:
-                traces: true
-                show_labels: false
+                    traces: true
+                    show_labels: false
 [...]
 ```
 
