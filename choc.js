@@ -11,6 +11,10 @@
 //      if true, will include holes and pads for Kailh choc hotswap sockets
 //    solder: default is false
 //      if true, will include holes to solder switches (works with hotswap too)
+//    outer_pad_width_front: default 2.6
+//    outer_pad_width_back: default 2.6
+//      Allow you to make the outer hotswap pads smaller to silence DRC
+//      warnings when the sockets are to close to the edge cuts.
 //    show_keycaps: default is true
 //      if true, will add choc sized keycap box around the footprint
 //    keycaps_x: default is 18
@@ -37,6 +41,8 @@ module.exports = {
         reverse: false,
         hotswap: true,
         solder: false,
+        outer_pad_width_front: 2.6,
+        outer_pad_width_back: 2.6,
         show_keycaps: true,
         keycaps_x: 18,
         keycaps_y: 17,
@@ -134,7 +140,7 @@ module.exports = {
             ${p.reverse ? hotswap_front_pad_cutoff : hotswap_front_pad_full}
 
             ${'' /* Right Pad (not cut off) */}
-            (pad 2 smd rect (at 8.275 -3.75 ${p.rot}) (size 2.6 2.6) (layers B.Cu B.Paste B.Mask) ${p.to.str})
+            (pad 2 smd rect (at ${8.275 - (2.6 - p.outer_pad_width_back)/2} -3.75 ${p.rot}) (size ${p.outer_pad_width_back} 2.6) (layers B.Cu B.Paste B.Mask) ${p.to.str})
 
             ${'' /* Side Hole */}
             (pad "" np_thru_hole circle (at 5 -3.75 195) (size 3 3) (drill 3) (layers *.Cu *.Mask))
@@ -167,7 +173,7 @@ module.exports = {
             ) ${p.from.str})
 
             ${'' /* Left Pad (not cut off) */}
-            (pad 2 smd rect (at -8.275 -3.75 ${p.rot}) (size 2.6 2.6) (layers F.Cu F.Paste F.Mask) ${p.to.str})
+            (pad 2 smd rect (at ${-8.275 + (2.6 - p.outer_pad_width_front)/2} -3.75 ${p.rot}) (size ${p.outer_pad_width_front} 2.6) (layers F.Cu F.Paste F.Mask) ${p.to.str})
 
             ${'' /* Side Hole */}
             (pad "" np_thru_hole circle (at -5 -3.75 195) (size 3 3) (drill 3) (layers *.Cu *.Mask))
