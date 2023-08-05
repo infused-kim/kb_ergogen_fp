@@ -96,6 +96,21 @@ module.exports = {
 
         `
 
+        const hotswap_front_pad_cutoff = `
+            (pad 1 smd custom (at -3.275 -5.95 ${p.rot}) (size 1 1) (layers B.Cu B.Paste B.Mask)
+                (zone_connect 0)
+                (options (clearance outline) (anchor rect))
+                (primitives
+                    (gr_poly (pts
+                    (xy -1.3 -1.3) (xy -1.3 0.25) (xy -0.05 1.3) (xy 1.3 1.3) (xy 1.3 -1.3)
+                ) (width 0))
+            ) ${p.from.str})
+        `
+
+        const hotswap_front_pad_full = `
+            (pad 1 smd rect (at -3.275 -5.95 ${p.rot}) (size 2.6 2.6) (layers B.Cu B.Paste B.Mask)  ${p.from.str})
+        `
+
         const hotswap_front = `
             ${'' /* Silkscreen outline */}
             (fp_line (start 7 -7) (end 7 -6) (layer B.SilkS) (width 0.15))
@@ -114,15 +129,9 @@ module.exports = {
             (fp_arc (start 2.499999 -6.7) (end 2 -6.690001) (angle -88.9) (layer B.SilkS) (width 0.15))
             (fp_arc (start 0.97 -2.17) (end 2.5 -2.17) (angle -90) (layer B.SilkS) (width 0.15))
 
-            ${'' /* Left Pad (cut off) */}
-            (pad 1 smd custom (at -3.275 -5.95 ${p.rot}) (size 1 1) (layers B.Cu B.Paste B.Mask)
-            (zone_connect 0)
-            (options (clearance outline) (anchor rect))
-            (primitives
-                (gr_poly (pts
-                (xy -1.3 -1.3) (xy -1.3 0.25) (xy -0.05 1.3) (xy 1.3 1.3) (xy 1.3 -1.3)
-            ) (width 0))
-            ) ${p.from.str})
+            ${'' /* Left Pad*/}
+
+            ${p.reverse ? hotswap_front_pad_cutoff : hotswap_front_pad_full}
 
             ${'' /* Right Pad (not cut off) */}
             (pad 2 smd rect (at 8.275 -3.75 ${p.rot}) (size 2.6 2.6) (layers B.Cu B.Paste B.Mask) ${p.to.str})
