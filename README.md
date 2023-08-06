@@ -39,7 +39,7 @@ pcbs:
                 what: infused-kim/nice_nano_pretty
                 params:
                     traces: true
-                    show_labels: false
+                    show_via_labels: false
 [...]
 ```
 
