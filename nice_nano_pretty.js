@@ -66,6 +66,7 @@ module.exports =  {
       P8: {type: 'net', value: 'P8'},
       P9: {type: 'net', value: 'P9'},
 
+      show_instructions: true,
       show_silk_labels: true,
       show_via_labels: true,
 
@@ -423,6 +424,15 @@ module.exports =  {
           (fp_line (start 6.29 -14.03) (end 6.29 16.57) (layer B.SilkS) (width 0.12))
       `;
 
+      const instructions = `
+          (fp_text user "R. Side - Jumper Here" (at 0 -15.245) (layer F.SilkS)
+            (effects (font (size 1 1) (thickness 0.15)))
+          )
+          (fp_text user "L. Side - Jumper Here" (at 0 -15.245) (layer B.SilkS)
+            (effects (font (size 1 1) (thickness 0.15)) (justify mirror))
+          )
+    `
+
       const socket_rows = gen_socket_rows(
         p.show_via_labels, p.show_silk_labels
       )
@@ -433,6 +443,7 @@ module.exports =  {
           ${''/* Controller*/}
           ${ common_top }
           ${ socket_rows }
+          ${ p.show_instructions ? instructions : '' }
         )
 
         ${''/* Traces */}
