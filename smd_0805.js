@@ -34,8 +34,119 @@ module.exports = {
         label_5: '',
         label_6: '',
         label_at_bottom: false,
+
+        component_3dmodel_side: '',
+
+        component_1_3dmodel_filename: '',
+        component_1_3dmodel_xyz_scale: '',
+        component_1_3dmodel_xyz_rotation: '',
+        component_1_3dmodel_xyz_offset: '',
+        component_2_3dmodel_filename: '',
+        component_2_3dmodel_xyz_scale: '',
+        component_2_3dmodel_xyz_rotation: '',
+        component_2_3dmodel_xyz_offset: '',
+        component_3_3dmodel_filename: '',
+        component_3_3dmodel_xyz_scale: '',
+        component_3_3dmodel_xyz_rotation: '',
+        component_3_3dmodel_xyz_offset: '',
+        component_4_3dmodel_filename: '',
+        component_4_3dmodel_xyz_scale: '',
+        component_4_3dmodel_xyz_rotation: '',
+        component_4_3dmodel_xyz_offset: '',
+        component_5_3dmodel_filename: '',
+        component_5_3dmodel_xyz_scale: '',
+        component_5_3dmodel_xyz_rotation: '',
+        component_5_3dmodel_xyz_offset: '',
+        component_6_3dmodel_filename: '',
+        component_6_3dmodel_xyz_scale: '',
+        component_6_3dmodel_xyz_rotation: '',
+        component_6_3dmodel_xyz_offset: '',
       },
     body: p => {
+
+        const get_3d_model_side = (model_side, default_side) => {
+
+            if(model_side == '') {
+                if(p.reverse == true) {
+                    model_side = default_side;
+                } else {
+                    model_side = p.side;
+                }
+            }
+
+            if(model_side == 'F' || model_side == 'B') {
+                return model_side;
+            } else {
+                return default_side;
+            }
+        }
+
+        const gen_3d_model = (filename, scale, rotation, offset, side, {
+            default_side =  'F',
+            scale_f =       [1, 1, 1],
+            rotation_f =    [0, 0, 0],
+            offset_f =      [0, 0, 0],
+            scale_b =       [1, 1, 1],
+            rotation_b =    [0, 0, 0],
+            offset_b =      [0, 0, 0]
+        } = {}) => {
+
+            if(filename == '') {
+              return '';
+            }
+
+            const final_side = get_3d_model_side(side, default_side, p);
+            const is_front = final_side === 'F';
+
+            // Determine the actual values to use
+            const final_scale = scale || (is_front ? scale_f : scale_b);
+            const final_rotation = rotation || (is_front ? rotation_f : rotation_b);
+            let final_offset = offset || (is_front ? offset_f : offset_b);
+
+            // Fix bug that seems to happen during the upgrade from KiCad 5 to
+            // 8. All offset values seem to be multiplied by 25.4. So here we
+            // divide them so that the upgrade KiCad file ends up with the
+            // correct value.
+            const offset_divisor = 25.4;
+            final_offset = final_offset.map(value => value / offset_divisor);
+
+            return  `
+                (model ${filename}
+                (at (xyz ${final_offset[0]} ${final_offset[1]} ${final_offset[2]}))
+                (scale (xyz ${final_scale[0]} ${final_scale[1]} ${final_scale[2]}))
+                (rotate (xyz ${final_rotation[0]} ${final_rotation[1]} ${final_rotation[2]}))
+                )
+            `;
+        };
+
+        const gen_3d_model_for_net = (net_idx, pos_x) => {
+            prop_base =         `component_${net_idx + 1}`;
+            prop_filename =     `${prop_base}_3dmodel_filename`;
+            prop_scale =        `${prop_base}_3dmodel_scale`;
+            prop_rotation =     `${prop_base}_3dmodel_rotation`;
+            prop_offset =       `${prop_base}_3dmodel_offset`;
+
+            if(!p[prop_filename]) {
+                return '';
+            }
+
+            const model = gen_3d_model(
+                p[prop_filename],
+                p[prop_scale],
+                p[prop_rotation],
+                p[prop_offset],
+                p.component_3dmodel_side,
+                {
+                  rotation_f: [0, 0, 0],
+                  offset_f:   [pos_x, 0, 0],
+
+                  rotation_b: [0, 180, 0],
+                  offset_b:   [-pos_x, 0, -1.6],
+                },
+            )
+
+            return model;
+        }
 
         const gen_nets = (p) => {
           const all_nets_from = [
@@ -151,6 +262,11 @@ module.exports = {
               `
             }
 
+            const side_3dmodel = get_3d_model_side(p.component_3dmodel_side, 'F');
+            if(layer == side_3dmodel) {
+                pad += gen_3d_model_for_net(pad_idx, pos_x);
+            }
+
             return pad;
         }
 
@@ -210,6 +326,7 @@ module.exports = {
             p.label_at_bottom, p.mirror, p.swap_pad_direction,
           );
         }
+
         const fp = `
           (module smd_805 (layer F.Cu) (tedit 6446BF3D)
             ${p.at /* parametric position */}

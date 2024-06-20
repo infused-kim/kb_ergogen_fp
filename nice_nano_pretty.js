@@ -42,6 +42,7 @@ module.exports =  {
     params: {
       designator: 'MCU',
       traces: true,
+
       RAW: {type: 'net', value: 'RAW'},
       GND: {type: 'net', value: 'GND'},
       RST: {type: 'net', value: 'RST'},
@@ -93,8 +94,82 @@ module.exports =  {
       P7_label: '',
       P8_label: '',
       P9_label: '',
+
+      // This side parameter applies to all 3d models
+      mcu_3dmodel_side: '',
+
+      mcu_3dmodel_filename: '${EG_INFUSED_KIM_3D_MODELS}/Nice_Nano_V2.step',
+      mcu_3dmodel_xyz_scale: '',
+      mcu_3dmodel_xyz_rotation: '',
+      mcu_3dmodel_xyz_offset: '',
+
+      header_3dmodel_filename: '${EG_INFUSED_KIM_3D_MODELS}/PinHeader_2.54mm_2x-12.step',
+      header_3dmodel_xyz_scale: '',
+      header_3dmodel_xyz_rotation: '',
+      header_3dmodel_xyz_offset: '',
+
+      socket_3dmodel_filename: '${EG_INFUSED_KIM_3D_MODELS}/PinSocket_2.54mm_5mm_2x-12.step',
+      socket_3dmodel_xyz_scale: '',
+      socket_3dmodel_xyz_rotation: '',
+      socket_3dmodel_xyz_offset: '',
     },
     body: p => {
+
+      const gen_3d_model = (filename, scale, rotation, offset, side, {
+        default_side =  'F',
+        scale_f =       [1, 1, 1],
+        rotation_f =    [0, 0, 0],
+        offset_f =      [0, 0, 0],
+        scale_b =       [1, 1, 1],
+        rotation_b =    [0, 0, 0],
+        offset_b =      [0, 0, 0]
+      } = {}) => {
+
+        if(filename == '') {
+          return '';
+        }
+
+        const get_3d_model_side = (side, default_side) => {
+
+            if(side == '') {
+                if(p.reverse == true) {
+                    side = default_side;
+                } else {
+                    side = p.side;
+                }
+            }
+
+            if(side == 'F' || side == 'B') {
+                return side;
+            } else {
+                return default_side;
+            }
+        }
+
+        const final_side = get_3d_model_side(side, default_side, p);
+        const is_front = final_side === 'F';
+
+        // Determine the actual values to use
+        const final_scale = scale || (is_front ? scale_f : scale_b);
+        const final_rotation = rotation || (is_front ? rotation_f : rotation_b);
+        let final_offset = offset || (is_front ? offset_f : offset_b);
+
+        // Fix bug that seems to happen during the upgrade from KiCad 5 to
+        // 8. All offset values seem to be multiplied by 25.4. So here we
+        // divide them so that the upgrade KiCad file ends up with the
+        // correct value.
+        const offset_divisor = 25.4;
+        final_offset = final_offset.map(value => value / offset_divisor);
+
+        return  `
+          (model ${filename}
+            (at (xyz ${final_offset[0]} ${final_offset[1]} ${final_offset[2]}))
+            (scale (xyz ${final_scale[0]} ${final_scale[1]} ${final_scale[2]}))
+            (rotate (xyz ${final_rotation[0]} ${final_rotation[1]} ${final_rotation[2]}))
+          )
+        `;
+      };
+
       const get_pin_net_name = (p, pin_name) => {
         return p[pin_name].name;
       };
@@ -438,12 +513,56 @@ module.exports =  {
       )
       const traces = gen_traces()
 
-
       return `
           ${''/* Controller*/}
           ${ common_top }
           ${ socket_rows }
           ${ p.show_instructions ? instructions : '' }
+          ${ gen_3d_model(
+                  p.mcu_3dmodel_filename,
+                  p.mcu_3dmodel_xyz_scale,
+                  p.mcu_3dmodel_xyz_rotation,
+                  p.mcu_3dmodel_xyz_offset,
+                  p.mcu_3dmodel_side,
+                  {
+                    rotation_f: [0, 0, 0],
+                    offset_f: [0, 0, 5.0],
+
+                    rotation_b: [0, 180, 0],
+                    offset_b: [0, 0, -6.6],
+                  },
+              )
+          }
+          ${ gen_3d_model(
+                  p.header_3dmodel_filename,
+                  p.header_3dmodel_xyz_scale,
+                  p.header_3dmodel_xyz_rotation,
+                  p.header_3dmodel_xyz_offset,
+                  p.mcu_3dmodel_side,
+                  {
+                    rotation_f: [0, 0, 0],
+                    offset_f: [0, -1.4, 1.5],
+
+                    rotation_b: [0, 180, 0],
+                    offset_b: [0, -1.4, -3.1],
+                  },
+              )
+          }
+          ${ gen_3d_model(
+                  p.socket_3dmodel_filename,
+                  p.socket_3dmodel_xyz_scale,
+                  p.socket_3dmodel_xyz_rotation,
+                  p.socket_3dmodel_xyz_offset,
+                  p.mcu_3dmodel_side,
+                  {
+                    rotation_f: [-90, 0, -90],
+                    offset_f: [0, -15.3, 0],
+
+                    rotation_b: [90, 0, -90],
+                    offset_b: [0, -15.3, -1.6],
+                  },
+              )
+          }
         )
 
         ${''/* Traces */}

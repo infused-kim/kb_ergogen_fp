@@ -16,8 +16,82 @@ module.exports = {
     CS: {type: 'net', value: 'CS'},
     show_labels: {type: 'boolean', value: true},
     jumpers_at_bottom: false,
+
+    // This side parameter applies to all 3d models
+    display_3dmodel_side: '',
+
+    display_3dmodel_filename: '${EG_INFUSED_KIM_3D_MODELS}/Nice_View.step',
+    display_3dmodel_xyz_scale: '',
+    display_3dmodel_xyz_rotation: '',
+    display_3dmodel_xyz_offset: '',
+
+    header_3dmodel_filename: '${EG_INFUSED_KIM_3D_MODELS}/PinHeader_2.54mm_1x-5.step',
+    header_3dmodel_xyz_scale: '',
+    header_3dmodel_xyz_rotation: '',
+    header_3dmodel_xyz_offset: '',
+
+    socket_3dmodel_filename: '${EG_INFUSED_KIM_3D_MODELS}/PinSocket_2.54mm_5mm_1x-5.step',
+    socket_3dmodel_xyz_scale: '',
+    socket_3dmodel_xyz_rotation: '',
+    socket_3dmodel_xyz_offset: '',
+
   },
   body: p => {
+
+    const gen_3d_model = (filename, scale, rotation, offset, side, {
+      default_side =  'F',
+      scale_f =       [1, 1, 1],
+      rotation_f =    [0, 0, 0],
+      offset_f =      [0, 0, 0],
+      scale_b =       [1, 1, 1],
+      rotation_b =    [0, 0, 0],
+      offset_b =      [0, 0, 0]
+    } = {}) => {
+
+      if(filename == '') {
+        return '';
+      }
+
+      const get_3d_model_side = (side, default_side) => {
+
+          if(side == '') {
+              if(p.reverse == true) {
+                  side = default_side;
+              } else {
+                  side = p.side;
+              }
+          }
+
+          if(side == 'F' || side == 'B') {
+              return side;
+          } else {
+              return default_side;
+          }
+      }
+
+      const final_side = get_3d_model_side(side, default_side, p);
+      const is_front = final_side === 'F';
+
+      // Determine the actual values to use
+      const final_scale = scale || (is_front ? scale_f : scale_b);
+      const final_rotation = rotation || (is_front ? rotation_f : rotation_b);
+      let final_offset = offset || (is_front ? offset_f : offset_b);
+
+      // Fix bug that seems to happen during the upgrade from KiCad 5 to
+      // 8. All offset values seem to be multiplied by 25.4. So here we
+      // divide them so that the upgrade KiCad file ends up with the
+      // correct value.
+      const offset_divisor = 25.4;
+      final_offset = final_offset.map(value => value / offset_divisor);
+
+      return  `
+        (model ${filename}
+          (at (xyz ${final_offset[0]} ${final_offset[1]} ${final_offset[2]}))
+          (scale (xyz ${final_scale[0]} ${final_scale[1]} ${final_scale[2]}))
+          (rotate (xyz ${final_rotation[0]} ${final_rotation[1]} ${final_rotation[2]}))
+        )
+      `;
+    };
 
     let dst_nets = [
       p.MOSI.str,
@@ -234,6 +308,54 @@ module.exports = {
         final += labels;
       }
     }
+
+    final += `
+      ${ gen_3d_model(
+            p.display_3dmodel_filename,
+            p.display_3dmodel_xyz_scale,
+            p.display_3dmodel_xyz_rotation,
+            p.display_3dmodel_xyz_offset,
+            p.display_3dmodel_side,
+            {
+              rotation_f: [0, 0, 0],
+              offset_f: [-7, -18, 6.8],
+
+              rotation_b: [0, 180, 0],
+              offset_b: [7, -18, -8.4],
+            },
+        )
+      }
+      ${ gen_3d_model(
+            p.header_3dmodel_filename,
+            p.header_3dmodel_xyz_scale,
+            p.header_3dmodel_xyz_rotation,
+            p.header_3dmodel_xyz_offset,
+            p.display_3dmodel_side,
+            {
+              rotation_f: [0, 0, -90],
+              offset_f: [0, -16.7, 3],
+
+              rotation_b: [0, 0, -90],
+              offset_b: [0, -16.7, -9],
+            },
+        )
+      }
+      ${ gen_3d_model(
+            p.socket_3dmodel_filename,
+            p.socket_3dmodel_xyz_scale,
+            p.socket_3dmodel_xyz_rotation,
+            p.socket_3dmodel_xyz_offset,
+            p.display_3dmodel_side,
+            {
+              rotation_f: [-90, 0, 0],
+              offset_f: [-5.1, -16.7, 0],
+
+              rotation_b: [90, 0, 0],
+              offset_b: [-5.1, -16.7, -1.6],
+            },
+        )
+      }
+    `
 
     final += bottom;
 

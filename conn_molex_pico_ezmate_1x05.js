@@ -21,8 +21,76 @@ module.exports = {
       pad_3: {type: 'net', value: 'CONN_3'},
       pad_4: {type: 'net', value: 'CONN_4'},
       pad_5: {type: 'net', value: 'CONN_5'},
+
+      cable_3dmodel_filename: '${EG_INFUSED_KIM_3D_MODELS}/Molex_Ezmate_Pico_Cable_5pin.step',
+      cable_3dmodel_side: '',
+      cable_3dmodel_xyz_scale: '',
+      cable_3dmodel_xyz_rotation: '',
+      cable_3dmodel_xyz_offset: '',
+
+      socket_3dmodel_filename: '${EG_INFUSED_KIM_3D_MODELS}/Molex_Ezmate_Pico_Socket_5pin.step',
+      socket_3dmodel_side: '',
+      socket_3dmodel_xyz_scale: '',
+      socket_3dmodel_xyz_rotation: '',
+      socket_3dmodel_xyz_offset: '',
     },
     body: p => {
+
+      const gen_3d_model = (filename, scale, rotation, offset, side, {
+        default_side =  'F',
+        scale_f =       [1, 1, 1],
+        rotation_f =    [0, 0, 0],
+        offset_f =      [0, 0, 0],
+        scale_b =       [1, 1, 1],
+        rotation_b =    [0, 0, 0],
+        offset_b =      [0, 0, 0]
+      } = {}) => {
+
+        if(filename == '') {
+          return '';
+        }
+
+        const get_3d_model_side = (side, default_side) => {
+
+            if(side == '') {
+                if(p.reverse == true) {
+                    side = default_side;
+                } else {
+                    side = p.side;
+                }
+            }
+
+            if(side == 'F' || side == 'B') {
+                return side;
+            } else {
+                return default_side;
+            }
+        }
+
+        const final_side = get_3d_model_side(side, default_side, p);
+        const is_front = final_side === 'F';
+
+        // Determine the actual values to use
+        const final_scale = scale || (is_front ? scale_f : scale_b);
+        const final_rotation = rotation || (is_front ? rotation_f : rotation_b);
+        let final_offset = offset || (is_front ? offset_f : offset_b);
+
+        // Fix bug that seems to happen during the upgrade from KiCad 5 to
+        // 8. All offset values seem to be multiplied by 25.4. So here we
+        // divide them so that the upgrade KiCad file ends up with the
+        // correct value.
+        const offset_divisor = 25.4;
+        final_offset = final_offset.map(value => value / offset_divisor);
+
+        return  `
+          (model ${filename}
+            (at (xyz ${final_offset[0]} ${final_offset[1]} ${final_offset[2]}))
+            (scale (xyz ${final_scale[0]} ${final_scale[1]} ${final_scale[2]}))
+            (rotate (xyz ${final_rotation[0]} ${final_rotation[1]} ${final_rotation[2]}))
+          )
+        `;
+      };
+
       const top = `
       (module conn_molex_pico_ezmate_1x05 (layer F.Cu) (tedit 644602FB)
         ${p.at /* parametric position */}
@@ -106,6 +174,40 @@ module.exports = {
         (pad MP smd roundrect (at -3.55 1.9 ${180 + p.rot}) (size 0.7 0.8) (layers B.Cu B.Paste B.Mask) (roundrect_rratio 0.25))
       `
 
+
+        const all_3d_models = `
+          ${ gen_3d_model(
+                p.cable_3dmodel_filename,
+                p.cable_3dmodel_xyz_scale,
+                p.cable_3dmodel_xyz_rotation,
+                p.cable_3dmodel_xyz_offset,
+                p.cable_3dmodel_side,
+                {
+                  rotation_f: [0, 0, 0],
+                  offset_f: [0, 0, 0.8],
+
+                  rotation_b: [0, 180, 0],
+                  offset_b: [0, 0, -(1.6 + 0.8)],
+                },
+            )
+          }
+          ${ gen_3d_model(
+                p.socket_3dmodel_filename,
+                p.socket_3dmodel_xyz_scale,
+                p.socket_3dmodel_xyz_rotation,
+                p.socket_3dmodel_xyz_offset,
+                p.socket_3dmodel_side,
+                {
+                  rotation_f: [-90, 0, 0],
+                  offset_f: [0, 0, 1.4],
+
+                  rotation_b: [-90, 180, 0],
+                  offset_b: [0, 0, -3],
+                },
+            )
+          }
+      `
+
       const bottom = `
       )
       `
@@ -119,6 +221,7 @@ module.exports = {
         final += back;
       }
 
+      final += all_3d_models;
       final += bottom;
 
       return final;
