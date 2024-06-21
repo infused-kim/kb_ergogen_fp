@@ -26,8 +26,72 @@ module.exports = {
     show_outline_x240: false,
     show_outline_t460s: false,
     show_board: false,
+
+      // This side parameter applies to all 3d models
+      tp_3dmodel_side: '',
+
+      tp_cap_3dmodel_filename: '${EG_INFUSED_KIM_3D_MODELS}/trackpoint/TP_Cap_Red_T460S.step',
+      tp_cap_3dmodel_xyz_scale: '',
+      tp_cap_3dmodel_xyz_rotation: '',
+      tp_cap_3dmodel_xyz_offset: '',
   },
   body: p => {
+
+    const gen_3d_model = (filename, scale, rotation, offset, side, {
+      default_side =  'F',
+      scale_f =       [1, 1, 1],
+      rotation_f =    [0, 0, 0],
+      offset_f =      [0, 0, 0],
+      scale_b =       [1, 1, 1],
+      rotation_b =    [0, 0, 0],
+      offset_b =      [0, 0, 0]
+    } = {}) => {
+
+      if(filename == '') {
+        return '';
+      }
+
+      const get_3d_model_side = (side, default_side) => {
+
+          if(side == '') {
+              if(p.reverse == true) {
+                  side = default_side;
+              } else {
+                  side = p.side;
+              }
+          }
+
+          if(side == 'F' || side == 'B') {
+              return side;
+          } else {
+              return default_side;
+          }
+      }
+
+      const final_side = get_3d_model_side(side, default_side, p);
+      const is_front = final_side === 'F';
+
+      // Determine the actual values to use
+      const final_scale = scale || (is_front ? scale_f : scale_b);
+      const final_rotation = rotation || (is_front ? rotation_f : rotation_b);
+      let final_offset = offset || (is_front ? offset_f : offset_b);
+
+      // Fix bug that seems to happen during the upgrade from KiCad 5 to
+      // 8. All offset values seem to be multiplied by 25.4. So here we
+      // divide them so that the upgrade KiCad file ends up with the
+      // correct value.
+      const offset_divisor = 25.4;
+      final_offset = final_offset.map(value => value / offset_divisor);
+
+      return  `
+        (model ${filename}
+          (at (xyz ${final_offset[0]} ${final_offset[1]} ${final_offset[2]}))
+          (scale (xyz ${final_scale[0]} ${final_scale[1]} ${final_scale[2]}))
+          (rotate (xyz ${final_rotation[0]} ${final_rotation[1]} ${final_rotation[2]}))
+        )
+      `;
+    };
+
     const top = `
       (module trackpoint_mount_t430 (layer F.Cu) (tedit 6449FFC5)
         ${p.at /* parametric position */}
@@ -210,6 +274,24 @@ module.exports = {
         final += outline_t460s_board
       }
     }
+
+    final += `
+      ${ gen_3d_model(
+              p.tp_cap_3dmodel_filename,
+              p.tp_cap_3dmodel_xyz_scale,
+              p.tp_cap_3dmodel_xyz_rotation,
+              p.tp_cap_3dmodel_xyz_offset,
+              p.tp_3dmodel_side,
+              {
+                rotation_f: [0, 0, 0],
+                offset_f: [0, 0, 10.5],
+
+                rotation_b: [0, 180, 0],
+                offset_b: [0, 0, -(10.5+1.6)],
+              },
+          )
+      }
+    `;
 
     final += bottom;
 

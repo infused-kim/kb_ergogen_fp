@@ -3,3 +3,39 @@
 
 # Work-in-progress files
 kicad_footprints/wip
+
+# Exported 3D models
+3d_model_src/*.step
+3d_model_src/*.stl
+
+
+# Python Files
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.python-version
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
