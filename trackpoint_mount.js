@@ -113,10 +113,10 @@ module.exports = {
     `;
 
     const front = `
-        (fp_circle (center 0 -9.5) (end -2.15 -9.5) (layer F.CrtYd) (width 0.05))
-        (fp_circle (center 0 -9.5) (end -1.9 -9.5) (layer Cmts.User) (width 0.15))
-        (fp_circle (center 0 9.5) (end -2.15 9.5) (layer F.CrtYd) (width 0.05))
-        (fp_circle (center 0 9.5) (end -1.9 9.5) (layer Cmts.User) (width 0.15))
+        (fp_circle (center 0 -9.75) (end -2.15 -9.75) (layer F.CrtYd) (width 0.05))
+        (fp_circle (center 0 -9.75) (end -1.9 -9.75) (layer Cmts.User) (width 0.15))
+        (fp_circle (center 0 9.75) (end -2.15 9.75) (layer F.CrtYd) (width 0.05))
+        (fp_circle (center 0 9.75) (end -1.9 9.75) (layer Cmts.User) (width 0.15))
         (fp_circle (center 0 0) (end -3.95 0) (layer F.CrtYd) (width 0.05))
         (fp_circle (center 0 0) (end -3.7 0) (layer Cmts.User) (width 0.15))
 
@@ -127,8 +127,8 @@ module.exports = {
     const back = `
         (fp_circle (center 0 0) (end -3.95 0) (layer B.CrtYd) (width 0.05))
         (fp_circle (center 0 0) (end -3.7 0) (layer Cmts.User) (width 0.15))
-        (fp_circle (center 0 9.5) (end -2.15 9.5) (layer B.CrtYd) (width 0.05))
-        (fp_circle (center 0 -9.5) (end -2.15 -9.5) (layer B.CrtYd) (width 0.05))
+        (fp_circle (center 0 9.75) (end -2.15 9.75) (layer B.CrtYd) (width 0.05))
+        (fp_circle (center 0 -9.75) (end -2.15 -9.75) (layer B.CrtYd) (width 0.05))
     `
 
     const outline_t430_front = `
@@ -241,9 +241,9 @@ module.exports = {
 
     const size = p.drill + (p.outline * 2)
     const bottom = `
-        (pad "" thru_hole circle (at 0 -9.5 180) (size 3.8 3.8) (drill 2.2) (layers *.Cu *.Mask))
+        (pad "" thru_hole circle (at 0 -9.75 180) (size 3.8 3.8) (drill 2.2) (layers *.Cu *.Mask))
         (pad 1 np_thru_hole circle (at 0 0 180) (size ${size} ${size}) (drill ${p.drill}) (layers *.Cu *.Mask))
-        (pad "" thru_hole circle (at 0 9.5 180) (size 3.8 3.8) (drill 2.2) (layers *.Cu *.Mask))
+        (pad "" thru_hole circle (at 0 9.75 180) (size 3.8 3.8) (drill 2.2) (layers *.Cu *.Mask))
       )
     `
 
