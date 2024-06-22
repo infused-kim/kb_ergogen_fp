@@ -34,6 +34,11 @@ module.exports = {
       tp_cap_3dmodel_xyz_scale: '',
       tp_cap_3dmodel_xyz_rotation: '',
       tp_cap_3dmodel_xyz_offset: '',
+
+      tp_extension_3dmodel_filename: '${EG_INFUSED_KIM_3D_MODELS}/trackpoint/TP_Extension_Red_T460S_h10.5_md0.0_pcb1.6.step',
+      tp_extension_3dmodel_xyz_scale: '',
+      tp_extension_3dmodel_xyz_rotation: '',
+      tp_extension_3dmodel_xyz_offset: '',
   },
   body: p => {
 
@@ -290,7 +295,23 @@ module.exports = {
                 offset_b: [0, 0, -(10.5+1.6)],
               },
           )
-      }
+        }
+
+      ${ gen_3d_model(
+              p.tp_extension_3dmodel_filename,
+              p.tp_extension_3dmodel_xyz_scale,
+              p.tp_extension_3dmodel_xyz_rotation,
+              p.tp_extension_3dmodel_xyz_offset,
+              p.tp_3dmodel_side,
+              {
+                rotation_f: [0, 0, 0],
+                offset_f: [0, 0, 0],
+
+                rotation_b: [0, 180, 0],
+                offset_b: [0, 0, -1.6],
+              },
+          )
+        }
     `;
 
     final += bottom;
