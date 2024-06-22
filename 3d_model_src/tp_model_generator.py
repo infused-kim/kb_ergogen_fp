@@ -50,7 +50,7 @@ class TrackPointRedT460S():
         return None
 
     def build_tp(self, pcb_vert_offset=0, z_offset=None):
-        tp_sensor = self.build_tp_sensor(z_offset=z_offset)
+        tp_sensor = self.build_tp_sensor()
         tp_fpc = self.build_sensor_fpc_cable(pcb_vert_offset)
 
         tp_assembly = bd.Compound(
@@ -61,20 +61,28 @@ class TrackPointRedT460S():
             ]
         )
 
+        if z_offset is None:
+            pcb_height_default = 1.6
+            z_offset = -(self.platform_height_total + pcb_height_default)
+
+        tp_assembly.move(bd.Location((0, 0, z_offset)))
+
         return tp_assembly
 
-    def build_tp_sensor(self, z_offset=None):
+    def build_tp_sensor(self):
         metal_frame = self._build_sensor_metal_frame(self.metal_thickness)
         platform = self._build_sensor_platform(
             self.platform_height_actual,
             self.platform_diameter,
-            z_offset=self.metal_thickness,
         )
+        platform.move(bd.Location((0, 0, self.metal_thickness)))
+
         adapter = self._build_sensor_adapter(
             self.adapter_width,
             self.adapeter_height,
-            z_offset=(self.platform_height_total),
         )
+        adapter.move(bd.Location((0, 0, self.platform_height_total)))
+
         platform_screws = self._build_sensor_platform_screws(
             height=(self.platform_height_total)
         )
@@ -89,11 +97,6 @@ class TrackPointRedT460S():
             ]
         )
 
-        if z_offset is None:
-            pcb_height_default = 1.6
-            z_offset = -(self.platform_height_total + pcb_height_default)
-        tp_sensor_assembly.move(bd.Location((0, 0, z_offset)))
-
         return tp_sensor_assembly
 
     def build_sensor_fpc_cable(self, pcb_vertical_offset=0):
@@ -107,7 +110,6 @@ class TrackPointRedT460S():
         fpc_width_pcb_h = fpc_width_pcb / 2
 
         fpc_len_widening = 1.0
-        fpc_len_between_sensor_pcb = 15.0
 
         # We always need to bring the fpc cable down from the metal part.
         # And on top of that the pcb can also be offset.
@@ -122,7 +124,7 @@ class TrackPointRedT460S():
         )
         point_fpc_main_end_xz = self._calc_offset_point(
             start_point=point_fpc_main_start_xz,
-            line_length=fpc_len_between_sensor_pcb,
+            line_length=self.fpc_len_between_sensor_pcb,
             vertical_offset=fpc_vertical_offset,
         )
         point_fpc_main_widening = self._calc_point_on_line_at_length(
@@ -270,8 +272,9 @@ class TrackPointRedT460S():
                 both=True,
                 mode=bd.Mode.SUBTRACT,
             )
-        # TODO: Figure out proper way to set correct location
-        fpc.part.move(bd.Location((0, 0, -self.adapeter_height)))
+
+        # Move up so that it rests on the sensor part.
+        fpc.part.move(bd.Location((0, 0, fpc_thickness)))
 
         fpc.part.color = bd.Color('orange')
         fpc.part.label = 'TrackPoint FPC Cable'
@@ -394,21 +397,20 @@ class TrackPointRedT460S():
 
         return metal_frame.part
 
-    def _build_sensor_platform(self, height, diameter, z_offset):
+    def _build_sensor_platform(self, height, diameter):
 
         radius = diameter / 2
 
         with bd.BuildPart() as platform:
-            with bd.Locations((0, 0, z_offset)):
-                bd.Cylinder(
-                    radius=radius,
-                    height=height,
-                    align=ALIGN_CENTER_BOTTOM,
-                )
+            bd.Cylinder(
+                radius=radius,
+                height=height,
+                align=ALIGN_CENTER_BOTTOM,
+            )
 
             # Cut hole for four screws
             bd.add(
-                self._build_sensor_platform_screws(height + z_offset),
+                self._build_sensor_platform_screws(height),
                 mode=bd.Mode.SUBTRACT
             )
 
@@ -417,15 +419,14 @@ class TrackPointRedT460S():
 
         return platform.part
 
-    def _build_sensor_adapter(self, width, height, z_offset):
+    def _build_sensor_adapter(self, width, height):
         with bd.BuildPart() as adapter:
-            with bd.Locations((0, 0, z_offset)):
-                bd.Box(
-                    length=width,
-                    width=width,
-                    height=height,
-                    align=ALIGN_CENTER_BOTTOM,
-                )
+            bd.Box(
+                length=width,
+                width=width,
+                height=height,
+                align=ALIGN_CENTER_BOTTOM,
+            )
 
         adapter.part.color = bd.Color('white')
         adapter.part.label = 'White Cap Adapter'
