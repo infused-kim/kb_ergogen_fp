@@ -40,7 +40,7 @@ module.exports = {
       tp_extension_3dmodel_xyz_rotation: '',
       tp_extension_3dmodel_xyz_offset: '',
 
-      tp_3dmodel_filename: '${EG_INFUSED_KIM_3D_MODELS}/trackpoint/TP_Red_T460S.step',
+      tp_3dmodel_filename: '${EG_INFUSED_KIM_3D_MODELS}/trackpoint/TP_Red_T460S_pcb_offset_0.0.step',
       tp_3dmodel_xyz_scale: '',
       tp_3dmodel_xyz_rotation: '',
       tp_3dmodel_xyz_offset: '',
