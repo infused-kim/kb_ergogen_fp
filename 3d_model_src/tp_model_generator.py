@@ -26,49 +26,59 @@ COLOR_SILVER = bd.Color(0xC0C0C0)
 DEFAULT_KB_PCB_HEIGHT = 1.6
 
 
-class TrackPointRedT460S():
-    def __init__(
-        self,
-        rotation: bd.RotationLike = (0, 0, 0),
-        align: bd.Union[
-            bd.Align,
-            tuple[bd.Align, bd.Align, bd.Align]
-        ] = ALIGN_CENTER,
-        mode: bd.Mode = bd.Mode.ADD,
-    ):
-        self.metal_thickness = 0.4
-        self.screw_mount_height_increase = 0.2
-        self.screw_mount_height = (
-            self.metal_thickness + self.screw_mount_height_increase
+class TrackPointRedT460S(bd.Compound):
+
+    metal_thickness = 0.4
+    screw_mount_height_increase = 0.2
+    screw_mount_height = (
+        metal_thickness + screw_mount_height_increase
+    )
+
+    metal_frame_width = 12.5
+
+    fpc_len_between_sensor_pcb = 16.0
+    fpc_thickness = 0.1
+
+    platform_height_total = 1.2
+    platform_height_actual = (
+        platform_height_total - metal_thickness
+        - fpc_thickness
+    )
+    platform_diameter = 8
+    platform_radius = 4
+
+    adapter_width = 2.2
+    adapeter_height = 2.7
+
+    pcb_width = 15.8
+    pcb_length = 34.2
+    pcb_thickness = 0.5
+    pcb_chip_height = 1.0
+    pcb_total_height = (
+        pcb_thickness + pcb_chip_height
+    )
+    pcb_fpc_edge_distance = 12.5
+
+    def __init__(self, pcb_vert_offset=0, z_offset=0):
+        tp_sensor = self._build_tp_sensor()
+        tp_fpc = self._build_sensor_fpc_cable(pcb_vert_offset)
+
+        tp_pcb = self._build_pcb()
+        tp_pcb.move(self._get_pcb_location(pcb_vert_offset))
+
+        super().__init__(
+            label='TrackPoint: T460S',
+            children=[
+                tp_sensor,
+                tp_fpc,
+                tp_pcb,
+            ]
         )
 
-        self.metal_frame_width = 12.5
+        self.move(bd.Location((0, 0, z_offset)))
 
-        self.fpc_len_between_sensor_pcb = 16.0
-        self.fpc_thickness = 0.1
-
-        self.platform_height_total = 1.2
-        self.platform_height_actual = (
-            self.platform_height_total - self.metal_thickness
-            - self.fpc_thickness
-        )
-        self.platform_diameter = 8
-        self.platform_radius = 4
-
-        self.adapter_width = 2.2
-        self.adapeter_height = 2.7
-
-        self.pcb_width = 15.8
-        self.pcb_length = 34.2
-        self.pcb_thickness = 0.5
-        self.pcb_chip_height = 1.0
-        self.pcb_total_height = self.pcb_thickness + self.pcb_chip_height
-        self.pcb_fpc_edge_distance = 12.5
-
-        return None
-
-
-    def build_tp_aligned_to_platform(self,
+    @classmethod
+    def build_tp_aligned_to_platform(cls,
                                      pcb_vert_offset=0,
                                      kb_pcb_height=DEFAULT_KB_PCB_HEIGHT,
                                      z_offset=0):
@@ -86,25 +96,26 @@ class TrackPointRedT460S():
 
         final_pcb_vert_offset = (
             0
-            + self.platform_height_total
-            - self.pcb_total_height
+            + cls.platform_height_total
+            - cls.pcb_total_height
             + pcb_vert_offset
         )
         final_z_offset = (
             0
-            - self.platform_height_total
+            - cls.platform_height_total
             - kb_pcb_height
             + z_offset
         )
 
-        tp = self.build_tp(
+        tp = cls(
             pcb_vert_offset=final_pcb_vert_offset,
             z_offset=final_z_offset
         )
 
         return tp
 
-    def build_tp_aligned_to_screw_mount(self,
+    @classmethod
+    def build_tp_aligned_to_screw_mount(cls,
                                         pcb_vert_offset=0,
                                         kb_pcb_height=DEFAULT_KB_PCB_HEIGHT,
                                         z_offset=0):
@@ -126,45 +137,52 @@ class TrackPointRedT460S():
 
         final_pcb_vert_offset = (
             0
-            + self.screw_mount_height
-            - self.pcb_total_height
+            + cls.screw_mount_height
+            - cls.pcb_total_height
             + pcb_vert_offset
         )
         final_z_offset = (
             0
-            - self.screw_mount_height
+            - cls.screw_mount_height
             - kb_pcb_height
             + z_offset
         )
 
-        tp = self.build_tp(
+        tp = cls(
             pcb_vert_offset=final_pcb_vert_offset,
             z_offset=final_z_offset
         )
 
         return tp
 
-    def build_tp(self, pcb_vert_offset=0, z_offset=0):
-        tp_sensor = self.build_tp_sensor()
-        tp_fpc = self.build_sensor_fpc_cable(pcb_vert_offset)
+    def print_sizes(self):
+        sensor = self._get_part_with_label(self, 'TP Sensor')
+        sensor_adapter = self._get_part_with_label(sensor, 'White Cap Adapter')
+        sensor_frame = self._get_part_with_label(sensor, 'Metal Frame')
+        sensor_platform = self._get_part_with_label(sensor, 'Round Platform')
+        pcb = self._get_part_with_label(self, 'TP PCB')
 
-        tp_pcb = self.build_pcb()
-        tp_pcb.move(self._get_pcb_location(pcb_vert_offset))
+        sensor_children_without_adapter = [
+            c.copy()
+            for c in sensor.children
+            if c.label != 'White Cap Adapter'
+        ]
 
-        tp_assembly = bd.Compound(
-            label='TrackPoint',
-            children=[
-                tp_sensor,
-                tp_fpc,
-                tp_pcb,
-            ]
+        tp_sensor_no_adapter = bd.Compound(
+            label='TP Sensor (Without Adapter)',
+            children=sensor_children_without_adapter
         )
 
-        tp_assembly.move(bd.Location((0, 0, z_offset)))
+        print(
+            f'Sensor size: {sensor.bounding_box().size}\n'
+            f'Sensor size without white adapter: '
+            f'{tp_sensor_no_adapter.bounding_box().size}\n'
+            f'Metal frame size: {sensor_frame.bounding_box().size}\n'
+            f'Platform size: {sensor_platform.bounding_box().size}\n'
+            f'PCB size: {pcb.bounding_box().size}\n'
+        )
 
-        return tp_assembly
-
-    def build_tp_sensor(self):
+    def _build_tp_sensor(self):
         metal_frame = self._build_sensor_metal_frame(self.metal_thickness)
         platform = self._build_sensor_platform(
             self.platform_height_actual,
@@ -183,7 +201,7 @@ class TrackPointRedT460S():
         )
 
         tp_sensor_assembly = bd.Compound(
-            label='TrackPoint Sensor',
+            label='TP Sensor',
             children=[
                 metal_frame,
                 platform,
@@ -194,7 +212,7 @@ class TrackPointRedT460S():
 
         return tp_sensor_assembly
 
-    def build_sensor_fpc_cable(self, pcb_vertical_offset=0):
+    def _build_sensor_fpc_cable(self, pcb_vertical_offset=0):
         fpc_width_sensor = 3.0
         fpc_width_sensor_h = fpc_width_sensor / 2
         fpc_width = 5.0
@@ -360,18 +378,18 @@ class TrackPointRedT460S():
             fpc.part.move(bd.Location((0, 0, self.fpc_thickness)))
 
         fpc.part.color = bd.Color('orange')
-        fpc.part.label = 'TrackPoint FPC Cable'
+        fpc.part.label = 'TP FPC Cable'
 
         return fpc.part
 
-    def build_pcb(self):
+    def _build_pcb(self):
         pcb_board = self._build_pcb_board()
         solder_pads = self._build_pcb_solder_pads()
         chip_large = self._build_pcb_chip_large()
         chip_small = self._build_pcb_chip_small()
 
         tp_pcb_assembly = bd.Compound(
-            label='TrackPoint PCB',
+            label='TP PCB',
             children=[
                 pcb_board,
                 solder_pads,
@@ -886,3 +904,10 @@ class TrackPointRedT460S():
             new_points.append(point_new)
 
         return new_points
+
+    def _get_part_with_label(self, compound, label):
+        for child in compound.children:
+            if child.label == label:
+                return child
+
+        return None
