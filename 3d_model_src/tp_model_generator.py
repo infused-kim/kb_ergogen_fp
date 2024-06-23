@@ -48,7 +48,7 @@ class TrackPointRedT460S(bd.Compound):
     platform_radius = 4
 
     adapter_width = 2.2
-    adapeter_height = 2.7
+    adapter_height = 2.7
 
     pcb_width = 15.8
     pcb_length = 34.2
@@ -192,7 +192,7 @@ class TrackPointRedT460S(bd.Compound):
 
         adapter = self._build_sensor_adapter(
             self.adapter_width,
-            self.adapeter_height,
+            self.adapter_height,
         )
         adapter.move(bd.Location((0, 0, self.platform_height_total)))
 
@@ -767,11 +767,17 @@ class TrackPointRedT460S(bd.Compound):
         return platform.part
 
     def _build_sensor_adapter(self, width, height):
+
+        # We make the platform smaller by the fpc cable thickness.
+        # So, here we compensate for that to get to the correct final
+        # height.
+        final_height = height + self.fpc_thickness
+
         with bd.BuildPart() as adapter:
             bd.Box(
                 length=width,
                 width=width,
-                height=height,
+                height=final_height,
                 align=ALIGN_CENTER_BOTTOM,
             )
 
