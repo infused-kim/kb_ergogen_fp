@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+
 import math
 import build123d as bd
 
@@ -157,7 +158,6 @@ class TrackPointRedT460S(bd.Compound):
 
     def print_sizes(self):
         sensor = self._get_part_with_label(self, 'TP Sensor')
-        sensor_adapter = self._get_part_with_label(sensor, 'White Cap Adapter')
         sensor_frame = self._get_part_with_label(sensor, 'Metal Frame')
         sensor_platform = self._get_part_with_label(sensor, 'Round Platform')
         pcb = self._get_part_with_label(self, 'TP PCB')
@@ -917,3 +917,46 @@ class TrackPointRedT460S(bd.Compound):
                 return child
 
         return None
+
+
+def gen_step_screw_mount(z_offset, pcb_vert_offset):
+    file_name = (
+        f'TP_Red_T460S_screw_mount_z_offset_{z_offset:+.1f}_'
+        f'pcb_{pcb_vert_offset:+.1f}.step'
+    )
+
+    print(f'Generating {file_name}...')
+    tp = TrackPointRedT460S.build_tp_aligned_to_screw_mount(
+        z_offset=z_offset,
+        pcb_vert_offset=pcb_vert_offset,
+    )
+    bd.export_step(tp, file_name)
+
+
+def gen_step_platform(z_offset, pcb_vert_offset):
+    file_name = (
+        f'TP_Red_T460S_platform_z_offset_{z_offset:+.1f}'
+        f'_pcb_offset_{pcb_vert_offset:+.1f}.step'
+    )
+
+    print(f'Generating {file_name}...')
+    tp = TrackPointRedT460S.build_tp_aligned_to_platform(
+        z_offset=z_offset,
+        pcb_vert_offset=pcb_vert_offset,
+    )
+    bd.export_step(tp, file_name)
+
+
+def gen_kicad_models():
+    print('Generating KiCad models...')
+    gen_step_screw_mount(z_offset=0, pcb_vert_offset=-2)
+    gen_step_screw_mount(z_offset=-2.0, pcb_vert_offset=0)
+    gen_step_platform(z_offset=0, pcb_vert_offset=-2)
+
+
+def main():
+    gen_kicad_models()
+
+
+if __name__ == "__main__":
+    main()
