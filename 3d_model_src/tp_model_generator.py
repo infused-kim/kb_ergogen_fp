@@ -47,17 +47,29 @@ class TrackPointRedT460S():
         self.adapter_width = 2.2
         self.adapeter_height = 2.7
 
+        self.fpc_len_between_sensor_pcb = 15.0
+        self.fpc_thickness = 0.1
+
+        self.pcb_width = 15.8
+        self.pcb_length = 34.2
+        self.pcb_thickness = 0.5
+        self.pcb_fpc_edge_distance = 12.5
+
         return None
 
     def build_tp(self, pcb_vert_offset=0, z_offset=None):
         tp_sensor = self.build_tp_sensor()
         tp_fpc = self.build_sensor_fpc_cable(pcb_vert_offset)
 
+        tp_pcb = self.build_pcb()
+        tp_pcb.move(self._get_pcb_location(pcb_vert_offset))
+
         tp_assembly = bd.Compound(
             label='TrackPoint',
             children=[
                 tp_sensor,
                 tp_fpc,
+                tp_pcb,
             ]
         )
 
@@ -100,8 +112,6 @@ class TrackPointRedT460S():
         return tp_sensor_assembly
 
     def build_sensor_fpc_cable(self, pcb_vertical_offset=0):
-        fpc_thickness = 0.1
-
         fpc_width_sensor = 3.0
         fpc_width_sensor_h = fpc_width_sensor / 2
         fpc_width = 5.0
@@ -111,22 +121,10 @@ class TrackPointRedT460S():
 
         fpc_len_widening = 1.0
 
-        # We always need to bring the fpc cable down from the metal part.
-        # And on top of that the pcb can also be offset.
-        fpc_vertical_offset = (
-            0 - self.metal_thickness + pcb_vertical_offset
+        point_fpc_main_start_xz, point_fpc_main_end_xz = self._get_fpc_points(
+            pcb_vertical_offset
         )
-        # The points between the metal frame and pcb that the
-        # fpc cable connects (on the xz axes)
-        point_fpc_main_start_xz = (
-            self.metal_frame_width / 2,
-            self.metal_thickness
-        )
-        point_fpc_main_end_xz = self._calc_offset_point(
-            start_point=point_fpc_main_start_xz,
-            line_length=self.fpc_len_between_sensor_pcb,
-            vertical_offset=fpc_vertical_offset,
-        )
+
         point_fpc_main_widening = self._calc_point_on_line_at_length(
             length=fpc_len_widening,
             point_a=point_fpc_main_start_xz,
@@ -210,7 +208,7 @@ class TrackPointRedT460S():
             with bd.BuildLine(bd.Plane.XZ):
                 bd.Polyline(fpc_points_xz)
             bd.make_brake_formed(
-                thickness=fpc_thickness,
+                thickness=self.fpc_thickness,
                 station_widths=fpc_width * 2,
                 side=bd.Side.LEFT,
             )
@@ -273,13 +271,259 @@ class TrackPointRedT460S():
                 mode=bd.Mode.SUBTRACT,
             )
 
-        # Move up so that it rests on the sensor part.
-        fpc.part.move(bd.Location((0, 0, fpc_thickness)))
+        # Workaround for strange bug where the location changes at higher
+        # offset values
+        if pcb_vertical_offset > 3.0:
+            fpc.part.move(bd.Location((0, 0, self.fpc_thickness)))
 
         fpc.part.color = bd.Color('orange')
         fpc.part.label = 'TrackPoint FPC Cable'
 
         return fpc.part
+
+    def build_pcb(self):
+        pcb_board = self._build_pcb_board()
+        solder_pads = self._build_pcb_solder_pads()
+        chip_large = self._build_pcb_chip_large()
+        chip_small = self._build_pcb_chip_small()
+
+        tp_pcb_assembly = bd.Compound(
+            label='TrackPoint PCB',
+            children=[
+                pcb_board,
+                solder_pads,
+                chip_large,
+                chip_small,
+            ]
+        )
+
+        return tp_pcb_assembly
+
+    def _build_pcb_board(self):
+        pcb_screw_cutout_radius = 1.0
+        pcb_ridge_spacing = 23.5
+        pcb_ridge_holes = 3
+        pcb_ridge_hole_spacing = 1.0
+        pcb_ridge_hole_radius = 0.3
+
+        with bd.BuildPart() as pcb:
+            with bd.BuildSketch():
+                bd.Rectangle(
+                    width=self.pcb_width,
+                    height=self.pcb_length,
+                )
+
+                # Screw Cutouts
+                screw_cutout_locs = bd.GridLocations(
+                    x_spacing=0, y_spacing=self.pcb_length,
+                    x_count=1, y_count=2,
+                )
+                with screw_cutout_locs:
+                    bd.Circle(
+                        radius=pcb_screw_cutout_radius,
+                        mode=bd.Mode.SUBTRACT,
+                    )
+
+                # Ridges
+                ridge_locs = bd.GridLocations(
+                    x_spacing=self.pcb_width, y_spacing=pcb_ridge_spacing,
+                    x_count=2, y_count=2,
+                )
+                with ridge_locs:
+                    ridge_hole_locs = bd.GridLocations(
+                        x_spacing=0, y_spacing=pcb_ridge_hole_spacing,
+                        x_count=1, y_count=pcb_ridge_holes,
+                    )
+                    with ridge_hole_locs:
+                        bd.Circle(
+                            radius=pcb_ridge_hole_radius,
+                            mode=bd.Mode.SUBTRACT,
+                        )
+
+            bd.extrude(amount=self.pcb_thickness)
+
+            # Cut holes for solder pads so that they can be flush with the
+            # board.
+            bd.add(
+                self._build_pcb_solder_pads(),
+                mode=bd.Mode.SUBTRACT,
+            )
+
+        pcb.part.color = bd.Color('red')
+        pcb.part.label = 'Board'
+
+        return pcb.part
+
+    def _build_pcb_solder_pads(self):
+        solder_pad_height = 0.1
+        ffc_pad_count = 8
+        ffc_pad_len = 2.0
+        ffc_pad_width = 0.5
+        ffc_pad_spacing = 1.0
+        ffc_pad_edge_distance_x = 4.5
+        ffc_pad_edge_distance_y = 3.0 + ffc_pad_len/2
+
+        sensor_pad_count = 4
+        sensor_pad_len = 2.0
+        sensor_pad_width = 1.5
+        sensor_pad_spacing = 2.0
+        sensor_pad_edge_distance_x = 3.5 + sensor_pad_width/2
+        sensor_pad_edge_distance_y = 12.5
+
+        with bd.BuildPart() as solder_pads:
+
+            # FFC Pads
+            ffc_pad_loc = (
+                -self.pcb_width/2 + ffc_pad_edge_distance_x,
+                self.pcb_length/2 - ffc_pad_edge_distance_y,
+                solder_pad_height,
+            )
+            with bd.Locations(ffc_pad_loc):
+                ffc_pad_grid_loc = bd.GridLocations(
+                    x_spacing=ffc_pad_spacing,
+                    y_spacing=0,
+                    x_count=ffc_pad_count,
+                    y_count=1,
+                )
+                with ffc_pad_grid_loc:
+                    bd.Box(
+                        length=ffc_pad_width,
+                        width=ffc_pad_len,
+                        height=solder_pad_height,
+                        align=ALIGN_CENTER_TOP,
+                    )
+
+            # Sensor FPC Pads
+            sensor_pad_loc = (
+                -self.pcb_width/2 + sensor_pad_edge_distance_x,
+                self.pcb_length/2 - sensor_pad_edge_distance_y,
+                solder_pad_height,
+            )
+            with bd.Locations(sensor_pad_loc):
+                sensor_pad_grid_loc = bd.GridLocations(
+                    x_spacing=0,
+                    y_spacing=sensor_pad_spacing,
+                    x_count=1,
+                    y_count=sensor_pad_count,
+                )
+                with sensor_pad_grid_loc:
+                    bd.Box(
+                        length=sensor_pad_len,
+                        width=sensor_pad_width,
+                        height=solder_pad_height,
+                        align=ALIGN_CENTER_TOP,
+                    )
+
+        solder_pads.part.color = COLOR_SILVER
+        solder_pads.part.label = 'Solder Pads'
+
+        return solder_pads.part
+
+    def _build_pcb_chip_large(self):
+        chip_edge_distance_x = 2.0
+        chip_edge_distance_y = 2.0
+
+        chip = self._build_pcb_chip(
+            width=6.0,
+            length=11.0,
+            height=1.0,
+            pin_count=16,
+        )
+
+        chip_size = chip.bounding_box().size
+        chip_loc = bd.Location((
+            self.pcb_width/2 - chip_edge_distance_x - chip_size.X/2,
+            -self.pcb_length/2 + chip_edge_distance_y + chip_size.Y/2,
+            0
+        ))
+        chip.move(chip_loc)
+
+        chip.label = 'Large Chip'
+
+        return chip
+
+    def _build_pcb_chip_small(self):
+        chip_edge_distance_x = 6.0
+        chip_edge_distance_y = 6.0
+
+        chip = self._build_pcb_chip(
+            width=3.0,
+            length=3.0,
+            height=1.0,
+            pin_count=4,
+        )
+
+        chip_size = chip.bounding_box().size
+        chip_loc = bd.Location(
+            (
+                self.pcb_width/2 - chip_edge_distance_x - chip_size.Y/2,
+                self.pcb_length/2 - chip_edge_distance_y - chip_size.X/2,
+                0
+            ),
+            (
+                0,
+                0,
+                90,
+            )
+        )
+        chip.move(chip_loc)
+
+        chip.label = 'Small Chip'
+
+        return chip
+
+    def _build_pcb_chip(self,
+                        width,
+                        length,
+                        height,
+                        pin_count,
+                        color=bd.Color("black")):
+
+        with bd.BuildPart() as chip:
+            bd.Box(
+                width=length,
+                length=width,
+                height=height,
+                align=ALIGN_CENTER_BOTTOM,
+            )
+
+        leg_length = 1.0
+        leg_width = 0.4
+        leg_height = height * 0.7
+        leg_spacing = 0.7
+        leg_row_spacing = width + leg_length
+
+        with bd.BuildPart() as legs:
+            leg_locations = bd.GridLocations(
+                x_spacing=leg_row_spacing,
+                y_spacing=leg_spacing,
+                x_count=2,
+                y_count=pin_count,
+            )
+            with leg_locations:
+                bd.Box(
+                    length=leg_length,
+                    width=leg_width,
+                    height=leg_height,
+                    align=ALIGN_CENTER_BOTTOM,
+                )
+
+        chip.part.color = color
+        chip.part.label = 'Body'
+        legs.part.color = COLOR_SILVER
+        legs.part.label = 'Legs'
+
+        chip_assembly = bd.Compound(
+            label='Chip',
+            children=[
+                chip.part,
+                legs.part,
+            ]
+        )
+
+        chip_assembly.move(bd.Location((0, 0, self.pcb_thickness)))
+
+        return chip_assembly
 
     def _build_sensor_metal_frame(self, metal_thickness):
 
@@ -447,9 +691,10 @@ class TrackPointRedT460S():
 
         return screws.part
 
-    def _calc_offset_point(self, start_point, line_length, vertical_offset):
-        pythagoras_a = vertical_offset
-        pythagoras_c = line_length
+    def _calc_distance_for_vert_offset(self, vert_offset, diagonal_line_len):
+
+        pythagoras_a = vert_offset
+        pythagoras_c = diagonal_line_len
 
         if pythagoras_a > pythagoras_c:
             raise ValueError(
@@ -459,10 +704,19 @@ class TrackPointRedT460S():
 
         pythagoras_b = math.sqrt(pythagoras_c**2 - pythagoras_a**2)
 
+        return pythagoras_b
+
+    def _calc_offset_point(self, start_point, line_length, vertical_offset):
+
+        distance = self._calc_distance_for_vert_offset(
+            vertical_offset,
+            line_length,
+        )
+
         start_point_x, start_point_y = start_point
         offset_point = (
-            start_point_x + pythagoras_b,
-            start_point_y + pythagoras_a
+            start_point_x + distance,
+            start_point_y + vertical_offset
         )
 
         return offset_point
@@ -485,6 +739,41 @@ class TrackPointRedT460S():
         y = y1 + proportion * (y2 - y1)
 
         return (x, y)
+
+    def _get_fpc_points(self, pcb_vertical_offset):
+        # We always need to bring the fpc cable down from the metal part.
+        # And on top of that the pcb can also be offset.
+        fpc_vertical_offset = (
+            0 - self.metal_thickness + pcb_vertical_offset
+        )
+
+        # The points between the metal frame and pcb that the
+        # fpc cable connects (on the xz axes)
+        point_fpc_main_start_xz = (
+            self.metal_frame_width / 2,
+            self.metal_thickness
+        )
+
+        point_fpc_main_end_xz = self._calc_offset_point(
+            start_point=point_fpc_main_start_xz,
+            line_length=self.fpc_len_between_sensor_pcb,
+            vertical_offset=fpc_vertical_offset,
+        )
+
+        return (point_fpc_main_start_xz, point_fpc_main_end_xz)
+
+    def _get_pcb_location(self, pcb_vertical_offset):
+        _, end_point = self._get_fpc_points(pcb_vertical_offset)
+
+        y_loc = -(self.pcb_length/2 - self.pcb_fpc_edge_distance)
+
+        pcb_loc = bd.Location((
+            end_point[0] + self.pcb_width/2,
+            y_loc,
+            end_point[1] + self.fpc_thickness
+        ))
+
+        return pcb_loc
 
     def _get_points_for_axes(self, points, axis_1, axis_2):
         allowed_axes = ['x', 'y', 'z']
