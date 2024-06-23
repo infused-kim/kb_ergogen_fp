@@ -23,6 +23,8 @@ ALIGN_CENTER_TOP = (
 
 COLOR_SILVER = bd.Color(0xC0C0C0)
 
+DEFAULT_KB_PCB_HEIGHT = 1.6
+
 
 class TrackPointRedT460S():
     def __init__(
@@ -65,7 +67,84 @@ class TrackPointRedT460S():
 
         return None
 
-    def build_tp(self, pcb_vert_offset=0, z_offset=None):
+
+    def build_tp_aligned_to_platform(self,
+                                     pcb_vert_offset=0,
+                                     kb_pcb_height=DEFAULT_KB_PCB_HEIGHT,
+                                     z_offset=0):
+        '''
+        Alignes the top of the pcb (including chips) with the round
+        platform and then moves the TP down so that the platform top
+        is at z=-1.6.
+
+        Use this method to generate a TP that you want to mount to the
+        PCB with the platform touching the PCB.
+
+        You can use pcb_vert_offset=-2 to move the PCB above hotswap
+        sockets.
+        '''
+
+        final_pcb_vert_offset = (
+            0
+            + self.platform_height_total
+            - self.pcb_total_height
+            + pcb_vert_offset
+        )
+        final_z_offset = (
+            0
+            - self.platform_height_total
+            - kb_pcb_height
+            + z_offset
+        )
+
+        tp = self.build_tp(
+            pcb_vert_offset=final_pcb_vert_offset,
+            z_offset=final_z_offset
+        )
+
+        return tp
+
+    def build_tp_aligned_to_screw_mount(self,
+                                        pcb_vert_offset=0,
+                                        kb_pcb_height=DEFAULT_KB_PCB_HEIGHT,
+                                        z_offset=0):
+        '''
+        Alignes the top of the pcb (including chips) with the metal screw
+        mount and then moves the TP down so that the platform top is at
+        z=-1.6.
+
+        Use this method to generate a TP that you want to mount to the
+        PCB with the screw mounting touching the PCB.
+
+        But keep in mind that the round platform is 0.6mm higher than the
+        screw mount and is 8mm wide. So you need to cut a very big hole
+        into the pcb.
+
+        You can use pcb_vert_offset=-2 to move the PCB above hotswap
+        sockets.
+        '''
+
+        final_pcb_vert_offset = (
+            0
+            + self.screw_mount_height
+            - self.pcb_total_height
+            + pcb_vert_offset
+        )
+        final_z_offset = (
+            0
+            - self.screw_mount_height
+            - kb_pcb_height
+            + z_offset
+        )
+
+        tp = self.build_tp(
+            pcb_vert_offset=final_pcb_vert_offset,
+            z_offset=final_z_offset
+        )
+
+        return tp
+
+    def build_tp(self, pcb_vert_offset=0, z_offset=0):
         tp_sensor = self.build_tp_sensor()
         tp_fpc = self.build_sensor_fpc_cable(pcb_vert_offset)
 
@@ -80,10 +159,6 @@ class TrackPointRedT460S():
                 tp_pcb,
             ]
         )
-
-        if z_offset is None:
-            pcb_height_default = 1.6
-            z_offset = -(self.platform_height_total + pcb_height_default)
 
         tp_assembly.move(bd.Location((0, 0, z_offset)))
 
