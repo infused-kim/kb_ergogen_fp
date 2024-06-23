@@ -47,7 +47,7 @@ class TrackPointRedT460S():
         self.adapter_width = 2.2
         self.adapeter_height = 2.7
 
-        self.fpc_len_between_sensor_pcb = 15.0
+        self.fpc_len_between_sensor_pcb = 16.0
         self.fpc_thickness = 0.1
 
         self.pcb_width = 15.8
