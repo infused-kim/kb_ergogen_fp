@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import math
+import os
 import build123d as bd
 
 
@@ -930,7 +931,9 @@ def gen_step_screw_mount(z_offset, pcb_vert_offset):
         z_offset=z_offset,
         pcb_vert_offset=pcb_vert_offset,
     )
-    bd.export_step(tp, file_name)
+
+    path = os.path.join('export/', file_name)
+    bd.export_step(tp, path)
 
 
 def gen_step_platform(z_offset, pcb_vert_offset):
@@ -944,7 +947,9 @@ def gen_step_platform(z_offset, pcb_vert_offset):
         z_offset=z_offset,
         pcb_vert_offset=pcb_vert_offset,
     )
-    bd.export_step(tp, file_name)
+
+    path = os.path.join('export/', file_name)
+    bd.export_step(tp, path)
 
 
 def gen_kicad_models():

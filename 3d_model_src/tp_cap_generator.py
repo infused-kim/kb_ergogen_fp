@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+import os
 
 from build123d import (
     BasePartObject,
@@ -276,7 +277,9 @@ def export_models(models, exporter, extension):
         file_name = f'{model["name"]}.{extension}'
         part = model['part']
         print(f'Exporting {file_name}')
-        exporter(part, file_name)
+
+        path = os.path.join('export/', file_name)
+        exporter(part, path)
 
 
 def export_models_stl(models):

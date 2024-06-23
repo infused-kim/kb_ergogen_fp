@@ -5,8 +5,8 @@
 kicad_footprints/wip
 
 # Exported 3D models
-3d_model_src/*.step
-3d_model_src/*.stl
+3d_model_src/**/*.step
+3d_model_src/**/*.stl
 
 
 # Python Files
