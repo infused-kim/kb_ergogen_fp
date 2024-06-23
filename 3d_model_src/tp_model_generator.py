@@ -35,11 +35,20 @@ class TrackPointRedT460S():
         mode: bd.Mode = bd.Mode.ADD,
     ):
         self.metal_thickness = 0.4
+        self.screw_mount_height_increase = 0.2
+        self.screw_mount_height = (
+            self.metal_thickness + self.screw_mount_height_increase
+        )
+
         self.metal_frame_width = 12.5
+
+        self.fpc_len_between_sensor_pcb = 16.0
+        self.fpc_thickness = 0.1
 
         self.platform_height_total = 1.2
         self.platform_height_actual = (
             self.platform_height_total - self.metal_thickness
+            - self.fpc_thickness
         )
         self.platform_diameter = 8
         self.platform_radius = 4
@@ -47,12 +56,11 @@ class TrackPointRedT460S():
         self.adapter_width = 2.2
         self.adapeter_height = 2.7
 
-        self.fpc_len_between_sensor_pcb = 16.0
-        self.fpc_thickness = 0.1
-
         self.pcb_width = 15.8
         self.pcb_length = 34.2
         self.pcb_thickness = 0.5
+        self.pcb_chip_height = 1.0
+        self.pcb_total_height = self.pcb_thickness + self.pcb_chip_height
         self.pcb_fpc_edge_distance = 12.5
 
         return None
@@ -147,22 +155,22 @@ class TrackPointRedT460S():
             (
                 -self.platform_radius,
                 0,
-                self.platform_height_total
+                self.platform_height_total - self.fpc_thickness
             ),
             (
                 0,
                 0,
-                self.platform_height_total
+                self.platform_height_total - self.fpc_thickness
             ),
             (
                 0,
                 fpc_width_sensor_h,
-                self.platform_height_total
+                self.platform_height_total - self.fpc_thickness
             ),
             (
                 self.platform_radius,
                 fpc_width_sensor_h,
-                self.platform_height_total
+                self.platform_height_total - self.fpc_thickness
             ),
             (
                 self.platform_radius + 0.7,
@@ -426,7 +434,7 @@ class TrackPointRedT460S():
         chip = self._build_pcb_chip(
             width=6.0,
             length=11.0,
-            height=1.0,
+            height=self.pcb_chip_height,
             pin_count=16,
         )
 
@@ -449,7 +457,7 @@ class TrackPointRedT460S():
         chip = self._build_pcb_chip(
             width=3.0,
             length=3.0,
-            height=1.0,
+            height=self.pcb_chip_height,
             pin_count=4,
         )
 
@@ -525,7 +533,10 @@ class TrackPointRedT460S():
 
         return chip_assembly
 
-    def _build_sensor_metal_frame(self, metal_thickness):
+    def _build_sensor_metal_frame(self, metal_thickness=None):
+
+        if metal_thickness is None:
+            metal_thickness = self.metal_thickness
 
         with bd.BuildPart() as hexagon:
             with bd.BuildSketch():
@@ -552,13 +563,12 @@ class TrackPointRedT460S():
             hole_edges = bottom_face.edges().filter_by(bd.GeomType.CIRCLE)
             bd.chamfer(hole_edges, length=0.1)
 
-        screw_mount_height_increase = 0.2
         screw_mount_width = 5.5
         screw_mount_hole_diameter = 1.6
         screw_mount_hole_radius = screw_mount_hole_diameter / 2
         screw_mount_hole_rim_diameter = 2.0
         screw_mount_hole_rim_radius = screw_mount_hole_rim_diameter / 2
-        screw_mount_hole_rim_height = 0.7
+        screw_mount_hole_rim_height = 0.6
 
         # Since this is a super important piece, we locate it using
         # absolute coordinates.
@@ -575,8 +585,8 @@ class TrackPointRedT460S():
         with bd.BuildPart() as screw_mount:
             with bd.BuildLine(bd.Plane.YZ):
                 bd.Polyline(
-                    (-11.5, screw_mount_height_increase),
-                    (-7.0, screw_mount_height_increase),
+                    (-11.5, self.screw_mount_height_increase),
+                    (-7.0, self.screw_mount_height_increase),
                     (-6.5, 0),
                     (-6, 0, 0),
                 )
@@ -687,7 +697,7 @@ class TrackPointRedT460S():
             )
 
         screws.part.color = COLOR_SILVER
-        screws.part.label = 'TrackPoint Sensos - Platform Screws'
+        screws.part.label = 'Platform Screws'
 
         return screws.part
 
