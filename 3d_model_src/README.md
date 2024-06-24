@@ -23,7 +23,7 @@ Currently, only a model for the red IBM TrackPoint that is found in the Lenovo T
 
 You can adjust the height at which the PCB is rendered. The code dynamically adjusts the spacing between the sensor and pcb modules as you increase or decrease the height of the pcb.
 
-By default the model aligns the sensor and pcb at the bottom, but when you are simulating placement in KiCad, you generally want to align the top of the PCB. For that purpose you can use the `build_tp_aligned_to_platform` and `build_tp_aligned_to_screw_mount` methods.
+By default the model aligns the sensor and pcb at the bottom, but when you are simulating placement in KiCad, you generally want to align the top of the PCB. For that purpose you can use the `build_tp_aligned_to_platform()` and `build_tp_aligned_to_screw_mount()` methods.
 
 You can also pass them parameters that move the pcb or entire model "down" on the z-axis to simulate mounting of the TrackPoint directly to the PCB, above the hotswap sockets, etc.
 
@@ -116,7 +116,14 @@ If you want to make changes and see a preview, I recommend using VSCode and the 
 - Start OCP Viewer
     - Press `command+shift+P`
     - Enter the command `OCP CAD Viewer: Open Viewer`
-- Press the play button next to the first cell in the jupyter notebook
-- Press play button for on of the cells that generate a model
-    - You should be able to see a preview in the OCP viewer
-    - Make changes to the scripts and preview them using this method
+- Run the init cell
+    - Hover your mouse over the first cell
+    - On the left side a `Play Button (triangle)` should appear
+    - Press it to run the code
+- Generate a model
+    - Press the play button at one of the cells with code that generates a model
+    - The viewer should show the model
+- For further instructions and help check out...
+    - [The build123d documentation](https://build123d.readthedocs.io/en/latest/index.html)
+    - [The OCP Viewer usage instructions](https://github.com/bernhard-42/vscode-ocp-cad-viewer)
+    - And the c[adquery / build123d discord server](https://discord.com/invite/Bj9AQPsCfx)

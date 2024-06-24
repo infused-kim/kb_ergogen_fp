@@ -12,6 +12,8 @@ Please check the instructions in the main README.
 - [DigiKey's 0805 capacitor (SMD_0805_Capacitor)](https://www.digikey.com/en/models/3888611)
 - [Joe Scotto's Nice!Nano MCU (Nice_Nano_V2)](https://github.com/joe-scotto/scottokeebs/tree/main/Extras/ScottoKicad/3dmodels/ScottoKeebs_MCU.3dshapes)
     - @infused-kim removed headers
+- [@infused-kim's TrackPoint Model (TP_Red_T460S_*)](../3d_model_src/tp_model_generator.py)
+- [@infused-kim's TrackPoint Extensions (TP_Extension*)](https://github.com/infused-kim/kb_trackpoint_extension)
 - [@infused-kim's TrackPoint Caps (TP_Cap_*)](../3d_model_src/tp_cap_generator.py)
 - [@infused-kim's TrackPoint Cut Keycap (TP_Cap_*)](https://github.com/infused-kim/kb_keycaps_trackpoint)
 - [Joe Scotto's Choc Hotswap Socket (Choc_V1_Hotswap)](https://github.com/joe-scotto/scottokeebs/blob/main/Extras/ScottoKicad/3dmodels/ScottoKeebs_Hotswap.3dshapes/Choc_V1.step)
