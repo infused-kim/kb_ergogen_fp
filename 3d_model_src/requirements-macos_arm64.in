@@ -1,0 +1,4 @@
+cadquery-ocp @ https://github.com/CadQuery/ocp-build-system/releases/download/7.7.2.0/cadquery_ocp-7.7.2-cp311-cp311-macosx_11_0_arm64.whl
+build123d
+bd-warehouse @ git+https://github.com/gumyr/bd_warehouse
+ocp_vscode
